@@ -47,16 +47,14 @@ main {
 
 #flashcard-form {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1.5rem;
-    align-items: flex-end;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-width: 200px;
+    width: 100%;
 }
 
 .input-group label {
@@ -73,7 +71,7 @@ main {
 }
 
 .source-btn {
-    width: 48px;
+    flex: 1;
     height: 48px;
     background-color: #ecf0f1;
     color: var(--primary-color);
@@ -118,29 +116,117 @@ main {
     border-color: var(--secondary-color);
 }
 
-/* Plus Icon Submit Button Styling */
+/* Full-width Plus Icon Submit Button Styling */
 #submit-btn {
-    width: 48px;
+    width: 100%;
     height: 48px;
-    background-color: var(--secondary-color);
-    color: white;
-    border: none;
+    background-color: #ecf0f1;
+    color: var(--primary-color);
+    border: 1px solid #bdc3c7;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.3s;
-    flex-shrink: 0;
+    transition: all 0.3s;
 }
 
 #submit-btn:hover {
-    background-color: #2980b9;
+    background-color: #dcdde1;
+    border-color: #95a5a6;
 }
 
 /* Flashcards Grid */
 .cards-section {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* 3D Card Flip Animation */
+.flashcard {
+    background-color: transparent;
+    width: 100%;
+    height: 350px;
+    perspective: 1000px;
+    cursor: pointer;
+    position: relative;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    border-radius: var(--radius);
+}
+
+.flashcard.is-flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flashcard-front {
+    background-color: var(--card-bg);
+}
+
+.flashcard-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    word-break: break-word;
+}
+
+/* Delete Button */
+.delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    padding: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
     padding-bottom: 3rem;
