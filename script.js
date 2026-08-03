@@ -24,7 +24,7 @@ fileBtn.addEventListener('click', () => {
 cameraInput.addEventListener('change', (e) => {
     if (e.target.files && e.target.files[0]) {
         selectedFile = e.target.files[0];
-        fileStatus.textContent = `Captured: ${selectedFile.name || 'Photo'}`;
+        fileStatus.textContent = `Captured: Photo ready`;
         fileStatus.style.color = '#27ae60';
         cameraBtn.classList.add('active');
         fileBtn.classList.remove('active');
