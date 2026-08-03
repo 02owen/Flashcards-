@@ -9,7 +9,6 @@
 <body>
     <header>
         <h1>Visual Flashcards</h1>
-        <p>Enhance your memory with images. Add your custom cards below!</p>
     </header>
 
     <main>
@@ -17,17 +16,15 @@
         <section class="form-section">
             <form id="flashcard-form">
                 <div class="input-group">
-                    <label>1. Select Image Source</label>
+                    <label>Image Source</label>
                     <div class="image-buttons-container">
-                        <!-- Camera Button -->
-                        <button type="button" id="camera-trigger-btn" class="source-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                            Take Photo
+                        <!-- Camera Icon Button -->
+                        <button type="button" id="camera-trigger-btn" class="source-btn" title="Take Photo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                         </button>
-                        <!-- File/Gallery Button -->
-                        <button type="button" id="file-trigger-btn" class="source-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                            Choose File
+                        <!-- File/Gallery Icon Button -->
+                        <button type="button" id="file-trigger-btn" class="source-btn" title="Choose File">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                         </button>
                     </div>
                     <!-- Hidden inputs -->
@@ -37,11 +34,14 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="card-word">2. Word / Translation</label>
+                    <label for="card-word">Word / Translation</label>
                     <input type="text" id="card-word" placeholder="e.g., Solenoid, Ambiguous..." required autocomplete="off">
                 </div>
                 
-                <button type="submit" id="submit-btn">Add Flashcard</button>
+                <!-- Plus Icon Submit Button -->
+                <button type="submit" id="submit-btn" title="Add Flashcard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
             </form>
         </section>
 
