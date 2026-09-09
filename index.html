@@ -1,56 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Flashcards</title>
+    <title>اختبار المذكر والمؤنث في اللغة الفرنسية</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Visual Flashcards</h1>
-    </header>
 
-    <main>
-        <!-- Form to add new flashcards -->
-        <section class="form-section">
-            <form id="flashcard-form">
-                <div class="input-group">
-                    <label>Image Source</label>
-                    <div class="image-buttons-container">
-                        <!-- Camera Icon Button -->
-                        <button type="button" id="camera-trigger-btn" class="source-btn" title="Take Photo">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                        </button>
-                        <!-- File/Gallery Icon Button -->
-                        <button type="button" id="file-trigger-btn" class="source-btn" title="Choose File">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                        </button>
-                    </div>
-                    <!-- Hidden inputs -->
-                    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
-                    <input type="file" id="file-input" accept="image/*" style="display: none;">
-                    <span id="selected-file-name" class="file-status">No image selected</span>
-                </div>
+<div class="container">
+    <div id="quiz-box">
+        <h1>تحديد جنس الكلمة (Masculin / Féminin)</h1>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
 
-                <div class="input-group">
-                    <label for="card-word">Word & Translation</label>
-                    <input type="text" id="card-word" placeholder="" required autocomplete="off">
-                </div>
-                
-                <!-- Full-width Plus Icon Submit Button -->
-                <button type="submit" id="submit-btn" title="Add Flashcard">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </button>
-            </form>
-        </section>
+        <div class="card">
+            <div class="word" id="word-text">...</div>
+            <div class="hint" id="word-meaning"></div>
+        </div>
 
-        <!-- Grid where cards will be displayed -->
-        <section class="cards-section" id="cards-container">
-            <!-- Cards will be injected here by JavaScript -->
-        </section>
-    </main>
+        <div class="feedback" id="feedback"></div>
 
-    <script src="script.js"></script>
+        <div class="buttons" id="options">
+            <button class="btn btn-masculin" onclick="checkAnswer('m')">مذكر (Masculin)</button>
+            <button class="btn btn-feminin" onclick="checkAnswer('f')">مؤنث (Féminin)</button>
+        </div>
+
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">الكلمة التالية</button>
+    </div>
+
+    <div class="score-container" id="score-box">
+        <div class="score-title">انتهى الاختبار! 🎉</div>
+        <div class="score-val" id="score-text">0 / 0</div>
+        <button class="restart-btn" style="display: block;" onclick="restartQuiz()">إعادة الاختبار</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
