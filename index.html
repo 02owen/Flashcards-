@@ -1,43 +1,627 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار المذكر والمؤنث في اللغة الفرنسية</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار التذكير والتأنيث في اللغة الفرنسية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --masculine: #2563eb;
+      --feminine: #db2777;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin-top: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      background: #e2e8f0;
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Word Box */
+    .word-box {
+      text-align: center;
+      padding: 30px 10px;
+      background: #f1f5f9;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .word-fr {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .audio-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .word-ar {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      padding: 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .option-btn.masc { color: var(--masculine); }
+    .option-btn.fem { color: var(--feminine); }
+
+    /* Feedback Box */
+    .feedback-box {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .feedback-box.correct {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .feedback-box.wrong {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .next-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+
+    .next-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Rules Table View */
+    .rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .rule-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      background: #f8fafc;
+    }
+
+    .rule-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .rule-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .badge-masc { background: #dbeafe; color: #1e40af; }
+    .badge-fem { background: #fce7f3; color: #9d174d; }
+
+    .rule-examples {
+      direction: ltr;
+      text-align: left;
+      font-size: 0.95rem;
+      color: #334155;
+    }
+
+    /* Results Screen */
+    .results-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 6px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .restart-btn {
+      padding: 12px 30px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="quiz-box">
-        <h1>تحديد جنس الكلمة (Masculin / Féminin)</h1>
+  <div class="container">
+    <header>
+      <h1>اختبار قواعد التذكير والتأنيث 🇫🇷</h1>
+      <p>بنك الكلمات الكامل والمستخرج من أوراق العمل والأنشطة</p>
+    </header>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('quiz')">الاختبار التفاعلي</button>
+      <button class="tab-btn" onclick="switchTab('rules')">ملخص القواعد والاستثناءات</button>
+    </div>
+
+    <!-- Quiz View -->
+    <div id="quiz-view" class="card">
+      <div id="quiz-content">
+        <div class="status-bar">
+          <span id="question-count">الكلمة 1 من 20</span>
+          <span id="score-count">النقاط: 0</span>
+        </div>
+
+        <div class="progress-bar-bg">
+          <div id="progress-bar" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="word-box">
+          <div style="direction: ltr;">
+            <span id="word-fr" class="word-fr">...</span>
+            <button class="audio-btn" onclick="speakCurrentWord()" title="استمع للنطق">🔊</button>
+          </div>
+          <div id="word-ar" class="word-ar">...</div>
+        </div>
+
+        <div class="options-grid">
+          <button class="option-btn masc" onclick="checkAnswer('Masculin')">
+            <span>مذكر</span>
+            <span style="font-size: 0.85rem; opacity: 0.8;">Masculin (Le / Un)</span>
+          </button>
+          <button class="option-btn fem" onclick="checkAnswer('Féminin')">
+            <span>مؤنث</span>
+            <span style="font-size: 0.85rem; opacity: 0.8;">Féminin (La / Une)</span>
+          </button>
+        </div>
+
+        <div id="feedback" class="feedback-box"></div>
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">الكلمة التالية ←</button>
+      </div>
+
+      <!-- Result View -->
+      <div id="result-content" class="results-screen hidden">
+        <h2>اكتمل الاختبار! 🎉</h2>
+        <p style="margin-bottom: 20px; color: var(--text-muted);">إليك النتيجة النهائية لتقييم مستواك:</p>
+        <div class="score-circle" id="final-score">0%</div>
+        <p id="result-message" style="margin-bottom: 25px; font-weight: 500;"></p>
+        <button class="restart-btn" onclick="startQuiz()">إعادة الاختبار 🔄</button>
+      </div>
+    </div>
+
+    <!-- Rules View -->
+    <div id="rules-view" class="card hidden">
+      <h2 style="margin-bottom: 15px; font-size: 1.3rem;">أهم قواعد النهايات والاستثناءات:</h2>
+      <div class="rules-list">
         
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
+        <div class="rule-card">
+          <span class="rule-badge badge-masc">مذكر Masculin</span>
+          <div class="rule-title">النهاية age-</div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">غالباً مذكر، ما عدا استثناءات هامة:</p>
+          <div class="rule-examples"><b>استثناءات مؤنثة:</b> page, plage, cage, nage, rage, image</div>
         </div>
 
-        <div class="card">
-            <div class="word" id="word-text">...</div>
-            <div class="hint" id="word-meaning"></div>
+        <div class="rule-card">
+          <span class="rule-badge badge-masc">مذكر Masculin</span>
+          <div class="rule-title">النهايات: ment / eau / eu / eil / ail / al / el</div>
+          <div class="rule-examples"><b>أمثلة:</b> le document, le bureau<br><b>استثناء مؤنث:</b> l'eau, la peau</div>
         </div>
 
-        <div class="feedback" id="feedback"></div>
-
-        <div class="buttons" id="options">
-            <button class="btn btn-masculin" onclick="checkAnswer('m')">مذكر (Masculin)</button>
-            <button class="btn btn-feminin" onclick="checkAnswer('f')">مؤنث (Féminin)</button>
+        <div class="rule-card">
+          <span class="rule-badge badge-fem">مؤنث Féminin</span>
+          <div class="rule-title">النهايات: tion / sion / xion / té / ade / ence / ance / ure / ie</div>
+          <div class="rule-examples"><b>أمثلة:</b> la action, la télévision, la voiture<br><b>استثناءات مذكرة:</b> le musée, le lycée (منتهية بـ ée لكنها مذكر!)، le silence, le stade, l'été, le côté, le comité.</div>
         </div>
 
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">الكلمة التالية</button>
+        <div class="rule-card">
+          <span class="rule-badge badge-masc">مذكر Masculin</span>
+          <div class="rule-title">كلمات تنتهي بـ S أو X في المفرد والجمع</div>
+          <div class="rule-examples"><b>أمثلة:</b> le pays, le jus, le temps, le mois, le corps, le cours, le prix</div>
+        </div>
+
+      </div>
     </div>
 
-    <div class="score-container" id="score-box">
-        <div class="score-title">انتهى الاختبار! 🎉</div>
-        <div class="score-val" id="score-text">0 / 0</div>
-        <button class="restart-btn" style="display: block;" onclick="restartQuiz()">إعادة الاختبار</button>
-    </div>
-</div>
+  </div>
 
-<script src="script.js"></script>
+  <script>
+    // قائمة المفردات الشاملة المستخرجة من الصور
+    const wordsDatabase = [
+      // كلمات مذكر وتعتبر من النهايات المذكرة العامة أو الاستثناءات المذكرة
+      { fr: "thé", ar: "شاي", gender: "Masculin", note: "أحد المشروبات (الأيام والفصول واللغات والمشروبات مذكر)" },
+      { fr: "café", ar: "قهوة", gender: "Masculin", note: "أسماء المشروبات مذكرة بشكل عام" },
+      { fr: "jus", ar: "عصير", gender: "Masculin", note: "كلمة تنتهي بـ s أصلية وهي مذكر" },
+      { fr: "lait", ar: "حليب", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "problème", ar: "مشكلة", gender: "Masculin", note: "تنتهي بـ ème وتكون مذكر" },
+      { fr: "sucre", ar: "سكر", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "livre", ar: "كتاب", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "cahier", ar: "دفتر", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "stylo", ar: "قلم حبر", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "exercice", ar: "تمرين", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "texte", ar: "نص", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "séminaire", ar: "ندوة", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "outil", ar: "أداة", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "copain", ar: "صديق", gender: "Masculin", note: "مذكر (مقابلها copine مؤنث)" },
+      { fr: "ami", ar: "صديق", gender: "Masculin", note: "مذكر (مقابلها amie مؤنث)" },
+      { fr: "monde", ar: "عالم", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "travail", ar: "عمل", gender: "Masculin", note: "منتهي بـ ail فهو مذكر" },
+      { fr: "emploi", ar: "عمل / وظيفة", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "site", ar: "موقع", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "arbre", ar: "شجرة", gender: "Masculin", note: "أسماء الأشجار مذكرة" },
+      { fr: "essai", ar: "تجربة / محاولة", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "roman", ar: "رواية", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "siècle", ar: "قرن", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "concert", ar: "حفلة موسيقية", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "résultat", ar: "نتيجة", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "endroit", ar: "مكان", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "lieu", ar: "مكان", gender: "Masculin", note: "منتهي بـ eu فهو مذكر" },
+      { fr: "accident", ar: "حادث", gender: "Masculin", note: "منتهي بـ ment فهو مذكر" },
+      { fr: "bruit", ar: "ضجة / صوت", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "jour", ar: "يوم", gender: "Masculin", note: "اسم مذكر" },
+      { fr: "document", ar: "وثيقة", gender: "Masculin", note: "النهاية ment تدل على المذكر" },
+
+      // استثناءات المذكر مع النهاية age
+      { fr: "page", ar: "صفحة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la page)" },
+      { fr: "plage", ar: "شاطئ", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la plage)" },
+      { fr: "cage", ar: "قفص", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la cage)" },
+      { fr: "nage", ar: "سباحة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la nage)" },
+      { fr: "rage", ar: "غضب", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la rage)" },
+      { fr: "image", ar: "صورة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la image)" },
+
+      // استثناءات النهاية eau
+      { fr: "eau", ar: "ماء", gender: "Féminin", note: "استثناء: تنتهي بـ eau ولكنها مؤنثة (l'eau)" },
+      { fr: "peau", ar: "جلد", gender: "Féminin", note: "استثناء: تنتهي بـ eau ولكنها مؤنثة (la peau)" },
+
+      // كلمات مؤنثة بالنهايات القياسية
+      { fr: "maison", ar: "منزل", gender: "Féminin", note: "منتهية بـ aison فهي مؤنثة" },
+      { fr: "mère", ar: "أم", gender: "Féminin", note: "مؤنث حقيقي" },
+      { fr: "sœur", ar: "أخت", gender: "Féminin", note: "مؤنث حقيقي" },
+      { fr: "femme", ar: "امرأة / زوجة", gender: "Féminin", note: "مؤنث حقيقي" },
+      { fr: "tante", ar: "عمة / خالة", gender: "Féminin", note: "مؤنث حقيقي" },
+      { fr: "fleur", ar: "زهرة", gender: "Féminin", note: "اسم مؤنث (la fleur)" },
+      { fr: "remarque", ar: "ملاحظة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "lampe", ar: "مصباح", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "herbe", ar: "عشب", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "voix", ar: "صوت", gender: "Féminin", note: "اسم مؤنث (la voix)" },
+      { fr: "histoire", ar: "قصة / تاريخ", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "revue", ar: "مجلة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "œuvre", ar: "عمل فني", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "vie", ar: "حياة", gender: "Féminin", note: "منتهية بـ ie فهي مؤنثة" },
+      { fr: "semaine", ar: "أسبوع", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "période", ar: "فترة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "porte", ar: "باب", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "fenêtre", ar: "نافذة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "chambre", ar: "غرفة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "école", ar: "مدرسة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "règle", ar: "قاعدة / مسطرة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "grammaire", ar: "قواعد", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "lettre", ar: "رسالة / حرف", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "aide", ar: "مساعدة", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "mer", ar: "بحر", gender: "Féminin", note: "اسم مؤنث (la mer)" },
+      { fr: "place", ar: "ساحة / مكان", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "opinion", ar: "رأي", gender: "Féminin", note: "اسم مؤنث (la opinion)" },
+      { fr: "rue", ar: "شارع", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "route", ar: "طريق", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "nuit", ar: "ليل", gender: "Féminin", note: "اسم مؤنث (la nuit)" },
+      { fr: "pluie", ar: "مطر", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "planète", ar: "كوكب", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "chose", ar: "شيء", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "cause", ar: "سبب", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "photo", ar: "صورة", gender: "Féminin", note: "اختصار photographie وهي مؤنث" },
+      { fr: "radio", ar: "راديو", gender: "Féminin", note: "اسم مؤنث (la radio)" },
+      { fr: "fin", ar: "نهاية", gender: "Féminin", note: "اسم مؤنث (la fin)" },
+      { fr: "couleur", ar: "لون", gender: "Féminin", note: "منتهية بـ eur وهي مؤنثة" },
+      { fr: "leçon", ar: "درس", gender: "Féminin", note: "اسم مؤنث" },
+      { fr: "erreur", ar: "خطأ", gender: "Féminin", note: "منتهية بـ eur وهي مؤنثة" },
+
+      // استثناءات النهايات المؤنثة (كلمات منتهية بنهايات مؤنثة ولكنها مذكر!)
+      { fr: "musée", ar: "متحف", gender: "Masculin", note: "استثناء: منتهي بـ ée ولكنه مذكر (le musée)" },
+      { fr: "lycée", ar: "مدرسة ثانوية", gender: "Masculin", note: "استثناء: منتهي بـ ée ولكنه مذكر (le lycée)" },
+      { fr: "silence", ar: "صمت", gender: "Masculin", note: "استثناء: منتهي بـ ence ولكنه مذكر (le silence)" },
+      { fr: "stade", ar: "ملعب", gender: "Masculin", note: "استثناء: منتهي بـ ade ولكنه مذكر (le stade)" },
+      { fr: "pamplemousse", ar: "ليمون هندي / بوملي", gender: "Masculin", note: "استثناء: مذكر (le pamplemousse)" },
+      { fr: "parapluie", ar: "مظلة", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le parapluie)" },
+      { fr: "incendie", ar: "حريق", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le incendie)" },
+      { fr: "génie", ar: "عبقرية / جني", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le génie)" },
+      { fr: "été", ar: "صيف", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (l'été)" },
+      { fr: "côté", ar: "جانب", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (le côté)" },
+      { fr: "comité", ar: "لجنة", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (le comité)" },
+
+      // كلمات تنتهي بـ S / X أصلية
+      { fr: "pays", ar: "بلد", gender: "Masculin", note: "تكون في المفرد والجمع بنفس الشكل وهي مذكر" },
+      { fr: "temps", ar: "وقت / طقس", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
+      { fr: "prix", ar: "سعر / جائزة", gender: "Masculin", note: "تنتهي بـ x أصلية وهي مذكر" },
+      { fr: "corps", ar: "جسم", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
+      { fr: "cours", ar: "درس / حصة", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
+      { fr: "mois", ar: "شهر", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
+      { fr: "repas", ar: "وجبة", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" }
+    ];
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    const TOTAL_QUIZ_QUESTIONS = 20;
+
+    function shuffleArray(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('quiz-view').classList.add('hidden');
+      document.getElementById('rules-view').classList.add('hidden');
+
+      if (tab === 'quiz') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('quiz-view').classList.remove('hidden');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('rules-view').classList.remove('hidden');
+      }
+    }
+
+    function startQuiz() {
+      currentQuestions = shuffleArray(wordsDatabase).slice(0, TOTAL_QUIZ_QUESTIONS);
+      currentIndex = 0;
+      score = 0;
+      
+      document.getElementById('quiz-content').classList.remove('hidden');
+      document.getElementById('result-content').classList.add('hidden');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = currentQuestions[currentIndex];
+      document.getElementById('word-fr').innerText = q.fr;
+      document.getElementById('word-ar').innerText = q.ar;
+      document.getElementById('question-count').innerText = `الكلمة ${currentIndex + 1} من ${TOTAL_QUIZ_QUESTIONS}`;
+      document.getElementById('score-count').innerText = `النقاط: ${score}`;
+      
+      const progressPercent = ((currentIndex) / TOTAL_QUIZ_QUESTIONS) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      // Reset feedback and buttons
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'none';
+      fb.className = 'feedback-box';
+      document.getElementById('next-btn').style.display = 'none';
+      
+      enableOptions(true);
+      speakCurrentWord();
+    }
+
+    function checkAnswer(selectedGender) {
+      enableOptions(false);
+      const q = currentQuestions[currentIndex];
+      const fb = document.getElementById('feedback');
+      const isCorrect = selectedGender === q.gender;
+
+      if (isCorrect) {
+        score++;
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = `<b>إجابة صحيحة! 🎉</b><br>الكلمة <b>${q.fr}</b> هي ${q.gender === 'Masculin' ? 'مذكر (Le/Un)' : 'مؤنث (La/Une)'}.<br><small>${q.note}</small>`;
+      } else {
+        fb.className = 'feedback-box wrong';
+        fb.innerHTML = `<b>إجابة خاطئة ❌</b><br>الصواب: الكلمة <b>${q.fr}</b> هي <b>${q.gender === 'Masculin' ? 'مذكر (Le/Un)' : 'مؤنث (La/Une)'}</b>.<br><small>${q.note}</small>`;
+      }
+
+      document.getElementById('score-count').innerText = `النقاط: ${score}`;
+      fb.style.display = 'block';
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function enableOptions(enable) {
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach(btn => {
+        btn.style.pointerEvents = enable ? 'auto' : 'none';
+        btn.style.opacity = enable ? '1' : '0.6';
+      });
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < TOTAL_QUIZ_QUESTIONS) {
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-content').classList.add('hidden');
+      document.getElementById('result-content').classList.remove('hidden');
+      
+      const percentage = Math.round((score / TOTAL_QUIZ_QUESTIONS) * 100);
+      document.getElementById('final-score').innerText = `${percentage}%`;
+
+      let msg = "";
+      if (percentage >= 90) msg = "ممتاز جداً! لديك إتقان تام لقواعد الاستثناءات والتذكير والتأنيث 👏";
+      else if (percentage >= 70) msg = "أداء جيد جداً! راجع بعض الاستثناءات البسيطة وستصل للعلامة الكاملة ⭐";
+      else msg = "يحتاج مستواك إلى بعض المراجعة، اطلع على قسم القواعد واستكشف الاستثناءات ثم حاول مجدداً 📚";
+
+      document.getElementById('result-message').innerText = msg;
+    }
+
+    function speakCurrentWord() {
+      if ('speechSynthesis' in window) {
+        const q = currentQuestions[currentIndex];
+        const utterance = new SpeechSynthesisUtterance(q.fr);
+        utterance.lang = 'fr-FR';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Start on load
+    startQuiz();
+  </script>
 </body>
 </html>
