@@ -1,627 +1,885 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>اختبار التذكير والتأنيث في اللغة الفرنسية</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --masculine: #2563eb;
-      --feminine: #db2777;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 650px;
-      margin-top: 20px;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    header h1 {
-      font-size: 1.8rem;
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
-
-    header p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      background: #e2e8f0;
-      padding: 5px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: var(--card-bg);
-      color: var(--primary);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid var(--border);
-    }
-
-    /* Status Bar */
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .progress-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--primary);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    /* Word Box */
-    .word-box {
-      text-align: center;
-      padding: 30px 10px;
-      background: #f1f5f9;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      position: relative;
-    }
-
-    .word-fr {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #1e293b;
-      margin-bottom: 8px;
-      direction: ltr;
-      display: inline-block;
-    }
-
-    .audio-btn {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    .word-ar {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-    }
-
-    /* Options Grid */
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .option-btn {
-      padding: 16px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: white;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .option-btn:hover {
-      border-color: var(--primary);
-      background: #f8fafc;
-    }
-
-    .option-btn.masc { color: var(--masculine); }
-    .option-btn.fem { color: var(--feminine); }
-
-    /* Feedback Box */
-    .feedback-box {
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: none;
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .feedback-box.correct {
-      background: #dcfce7;
-      color: #15803d;
-      border: 1px solid #86efac;
-    }
-
-    .feedback-box.wrong {
-      background: #fee2e2;
-      color: #b91c1c;
-      border: 1px solid #fca5a5;
-    }
-
-    .next-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: none;
-    }
-
-    .next-btn:hover {
-      background: var(--primary-hover);
-    }
-
-    /* Rules Table View */
-    .rules-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .rule-card {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 15px;
-      background: #f8fafc;
-    }
-
-    .rule-title {
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 5px;
-    }
-
-    .rule-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .badge-masc { background: #dbeafe; color: #1e40af; }
-    .badge-fem { background: #fce7f3; color: #9d174d; }
-
-    .rule-examples {
-      direction: ltr;
-      text-align: left;
-      font-size: 0.95rem;
-      color: #334155;
-    }
-
-    /* Results Screen */
-    .results-screen {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .score-circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #f1f5f9;
-      border: 6px solid var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .restart-btn {
-      padding: 12px 30px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .hidden { display: none !important; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تحديد جنس الأسماء في اللغة الفرنسية</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        },
+                        masculin: '#2563eb',
+                        feminin: '#db2777'
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+        .french-word {
+            font-family: system-ui, -apple-system, sans-serif;
+            direction: ltr;
+            display: inline-block;
+        }
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-  <div class="container">
-    <header>
-      <h1>اختبار قواعد التذكير والتأنيث 🇫🇷</h1>
-      <p>بنك الكلمات الكامل والمستخرج من أوراق العمل والأنشطة</p>
+    <!-- Navbar / Header -->
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-white text-blue-700 w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl shadow-inner">
+                    🇫🇷
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl leading-tight">اختبار جنس الأسماء الفرنسية</h1>
+                    <p class="text-xs text-blue-200">Masculin (مذكر) / Féminin (مؤنث)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 space-x-reverse bg-white/10 p-1.5 rounded-lg text-sm backdrop-blur-md">
+                <button id="nav-quiz" onclick="switchMode('quiz')" class="px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow">
+                    <i class="fa-solid fa-gamepad me-1"></i> الاختبار
+                </button>
+                <button id="nav-flashcards" onclick="switchMode('flashcards')" class="px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition">
+                    <i class="fa-solid fa-layer-group me-1"></i> البطاقات
+                </button>
+                <button id="nav-rules" onclick="switchMode('rules')" class="px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition">
+                    <i class="fa-solid fa-book me-1"></i> القواعد
+                </button>
+            </div>
+        </div>
     </header>
 
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('quiz')">الاختبار التفاعلي</button>
-      <button class="tab-btn" onclick="switchTab('rules')">ملخص القواعد والاستثناءات</button>
-    </div>
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
 
-    <!-- Quiz View -->
-    <div id="quiz-view" class="card">
-      <div id="quiz-content">
-        <div class="status-bar">
-          <span id="question-count">الكلمة 1 من 20</span>
-          <span id="score-count">النقاط: 0</span>
-        </div>
+        <!-- MODE 1: QUIZ -->
+        <section id="section-quiz" class="block">
+            <!-- Quiz Configuration Bar -->
+            <div id="quiz-config" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 mb-6">
+                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center">
+                    <i class="fa-solid fa-sliders text-blue-600 me-2"></i> إعدادات الاختبار
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">نوع الكلمات:</label>
+                        <select id="filter-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="all">جميع الكلمات (120+ كلمة)</option>
+                            <option value="exceptions">الاستثناءات الهامة فقط (الكلمات الخادعة)</option>
+                            <option value="masculin">الكلمات المذكرة فقط</option>
+                            <option value="feminin">الكلمات المؤنثة فقط</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">عدد الأسئلة:</label>
+                        <select id="question-count" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="10">10 أسئلة (سريع)</option>
+                            <option value="20" selected>20 سؤالاً (متوسط)</option>
+                            <option value="40">40 سؤالاً (شامل)</option>
+                            <option value="all">كل الكلمات المتاحة</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="startNewQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-md transition flex items-center justify-center space-x-2 space-x-reverse">
+                            <i class="fa-solid fa-play"></i>
+                            <span>بدء اختبار جديد</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <div class="progress-bar-bg">
-          <div id="progress-bar" class="progress-bar-fill"></div>
-        </div>
+            <!-- Quiz Play Area -->
+            <div id="quiz-box" class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 relative overflow-hidden">
+                <!-- Progress Header -->
+                <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-500">
+                    <span id="quiz-progress-text">السؤال 1 من 20</span>
+                    <div class="flex items-center space-x-4 space-x-reverse">
+                        <span class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full text-xs">
+                            <i class="fa-solid fa-check me-1"></i> صحيح: <span id="score-correct">0</span>
+                        </span>
+                        <span class="text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full text-xs">
+                            <i class="fa-solid fa-xmark me-1"></i> خطأ: <span id="score-incorrect">0</span>
+                        </span>
+                    </div>
+                </div>
 
-        <div class="word-box">
-          <div style="direction: ltr;">
-            <span id="word-fr" class="word-fr">...</span>
-            <button class="audio-btn" onclick="speakCurrentWord()" title="استمع للنطق">🔊</button>
-          </div>
-          <div id="word-ar" class="word-ar">...</div>
-        </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-2.5 rounded-full mb-8 overflow-hidden">
+                    <div id="quiz-progress-bar" class="bg-blue-600 h-full transition-all duration-300 rounded-full" style="width: 5%"></div>
+                </div>
 
-        <div class="options-grid">
-          <button class="option-btn masc" onclick="checkAnswer('Masculin')">
-            <span>مذكر</span>
-            <span style="font-size: 0.85rem; opacity: 0.8;">Masculin (Le / Un)</span>
-          </button>
-          <button class="option-btn fem" onclick="checkAnswer('Féminin')">
-            <span>مؤنث</span>
-            <span style="font-size: 0.85rem; opacity: 0.8;">Féminin (La / Une)</span>
-          </button>
-        </div>
+                <!-- Question Card -->
+                <div class="text-center py-6">
+                    <div class="inline-block bg-blue-50 text-blue-700 font-bold px-4 py-1.5 rounded-full text-xs mb-4">
+                        حدد جنس الاسم التالي في اللغة الفرنسية
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-3 space-x-reverse mb-3">
+                        <h2 id="current-word" class="french-word text-4xl md:text-5xl font-black text-slate-800 tracking-wide">
+                            thé
+                        </h2>
+                        <button onclick="speakCurrentWord()" title="استمع للنطق" class="text-slate-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition">
+                            <i class="fa-solid fa-volume-high text-2xl"></i>
+                        </button>
+                    </div>
+                    
+                    <p id="current-translation" class="text-lg font-semibold text-slate-500 mb-8">
+                        (شاي)
+                    </p>
 
-        <div id="feedback" class="feedback-box"></div>
-        <button id="next-btn" class="next-btn" onclick="nextQuestion()">الكلمة التالية ←</button>
-      </div>
+                    <!-- Options Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto" id="quiz-options">
+                        <button onclick="checkAnswer('Masculin')" id="btn-masculin" class="bg-blue-50 hover:bg-blue-600 hover:text-white border-2 border-blue-200 text-blue-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group">
+                            <span class="text-2xl">👨</span>
+                            <span>مذكر (Masculin)</span>
+                            <span class="text-xs opacity-75 font-normal">أداة المعرفة: Le / Un</span>
+                        </button>
+                        
+                        <button onclick="checkAnswer('Féminin')" id="btn-feminin" class="bg-pink-50 hover:bg-pink-600 hover:text-white border-2 border-pink-200 text-pink-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group">
+                            <span class="text-2xl">👩</span>
+                            <span>مؤنث (Féminin)</span>
+                            <span class="text-xs opacity-75 font-normal">أداة المعرفة: La / Une</span>
+                        </button>
+                    </div>
+                </div>
 
-      <!-- Result View -->
-      <div id="result-content" class="results-screen hidden">
-        <h2>اكتمل الاختبار! 🎉</h2>
-        <p style="margin-bottom: 20px; color: var(--text-muted);">إليك النتيجة النهائية لتقييم مستواك:</p>
-        <div class="score-circle" id="final-score">0%</div>
-        <p id="result-message" style="margin-bottom: 25px; font-weight: 500;"></p>
-        <button class="restart-btn" onclick="startQuiz()">إعادة الاختبار 🔄</button>
-      </div>
-    </div>
+                <!-- Feedback / Explanation Panel -->
+                <div id="feedback-panel" class="hidden mt-6 p-5 rounded-2xl border transition-all">
+                    <div class="flex items-start space-x-3 space-x-reverse">
+                        <div id="feedback-icon" class="text-3xl"></div>
+                        <div class="flex-grow">
+                            <h3 id="feedback-title" class="font-bold text-lg"> الإجابة </h3>
+                            <p id="feedback-text" class="text-sm mt-1 leading-relaxed"></p>
+                            <div id="feedback-rule" class="text-xs mt-2 bg-white/70 p-2.5 rounded-lg font-semibold border border-slate-200/50"></div>
+                        </div>
+                    </div>
+                    <button onclick="nextQuestion()" class="mt-4 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center space-x-2 space-x-reverse">
+                        <span>السؤال التالي</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
 
-    <!-- Rules View -->
-    <div id="rules-view" class="card hidden">
-      <h2 style="margin-bottom: 15px; font-size: 1.3rem;">أهم قواعد النهايات والاستثناءات:</h2>
-      <div class="rules-list">
-        
-        <div class="rule-card">
-          <span class="rule-badge badge-masc">مذكر Masculin</span>
-          <div class="rule-title">النهاية age-</div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">غالباً مذكر، ما عدا استثناءات هامة:</p>
-          <div class="rule-examples"><b>استثناءات مؤنثة:</b> page, plage, cage, nage, rage, image</div>
-        </div>
+            <!-- Quiz Results Modal / View -->
+            <div id="quiz-results" class="hidden bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center">
+                <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
+                    🏆
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-1">أحسنت! أكملت الاختبار</h2>
+                <p class="text-slate-500 text-sm mb-6">إليك ملخص نتيجتك في تحديد أضداد وجنس الأسماء</p>
 
-        <div class="rule-card">
-          <span class="rule-badge badge-masc">مذكر Masculin</span>
-          <div class="rule-title">النهايات: ment / eau / eu / eil / ail / al / el</div>
-          <div class="rule-examples"><b>أمثلة:</b> le document, le bureau<br><b>استثناء مؤنث:</b> l'eau, la peau</div>
-        </div>
+                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6">
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                        <span class="block text-xs text-slate-400 font-bold">المجموع</span>
+                        <span id="result-total" class="text-xl font-black text-slate-700">20</span>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                        <span class="block text-xs text-emerald-600 font-bold">صحيح</span>
+                        <span id="result-correct" class="text-xl font-black text-emerald-600">18</span>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-2xl border border-rose-100">
+                        <span class="block text-xs text-rose-600 font-bold">النسبة</span>
+                        <span id="result-percent" class="text-xl font-black text-rose-600">90%</span>
+                    </div>
+                </div>
 
-        <div class="rule-card">
-          <span class="rule-badge badge-fem">مؤنث Féminin</span>
-          <div class="rule-title">النهايات: tion / sion / xion / té / ade / ence / ance / ure / ie</div>
-          <div class="rule-examples"><b>أمثلة:</b> la action, la télévision, la voiture<br><b>استثناءات مذكرة:</b> le musée, le lycée (منتهية بـ ée لكنها مذكر!)، le silence, le stade, l'été, le côté, le comité.</div>
-        </div>
+                <!-- Review Incorrect Words if any -->
+                <div id="incorrect-words-wrapper" class="text-right max-w-md mx-auto mb-6 hidden">
+                    <h3 class="font-bold text-sm text-slate-700 mb-2">الكلمات التي أخطأت فيها:</h3>
+                    <div id="incorrect-words-list" class="space-y-2 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-xl border"></div>
+                </div>
 
-        <div class="rule-card">
-          <span class="rule-badge badge-masc">مذكر Masculin</span>
-          <div class="rule-title">كلمات تنتهي بـ S أو X في المفرد والجمع</div>
-          <div class="rule-examples"><b>أمثلة:</b> le pays, le jus, le temps, le mois, le corps, le cours, le prix</div>
-        </div>
+                <div class="flex justify-center space-x-3 space-x-reverse">
+                    <button onclick="startNewQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition">
+                        <i class="fa-solid fa-rotate-right me-1"></i> إعادة الاختبار
+                    </button>
+                    <button onclick="switchMode('flashcards')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-6 rounded-xl transition">
+                        <i class="fa-solid fa-layer-group me-1"></i> مراجعة البطاقات
+                    </button>
+                </div>
+            </div>
+        </section>
 
-      </div>
-    </div>
+        <!-- MODE 2: FLASHCARDS -->
+        <section id="section-flashcards" class="hidden">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 mb-6 flex flex-wrap justify-between items-center gap-3">
+                <h2 class="font-bold text-slate-800 text-lg">بطاقات المراجعة السريعة</h2>
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <select id="flashcard-filter" onchange="renderFlashcard()" class="bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm font-semibold text-slate-700">
+                        <option value="all">جميع الكلمات</option>
+                        <option value="masculin">الكلمات المذكرة فقط</option>
+                        <option value="feminin">الكلمات المؤنثة فقط</option>
+                        <option value="exceptions">الاستثناءات الهامة</option>
+                    </select>
+                </div>
+            </div>
 
-  </div>
+            <!-- Flashcard Display -->
+            <div class="max-w-md mx-auto">
+                <div id="flashcard-container" onclick="flipCard()" class="flip-card cursor-pointer h-72 w-full">
+                    <div class="flip-card-inner relative w-full h-full duration-500 rounded-3xl shadow-xl border border-slate-200">
+                        
+                        <!-- Front side -->
+                        <div class="flip-card-front absolute w-full h-full bg-white rounded-3xl p-6 flex flex-col justify-between items-center text-center">
+                            <div class="w-full flex justify-between items-center text-xs text-slate-400 font-bold">
+                                <span>انقر لقلب البطاقة 🔄</span>
+                                <span id="fc-index">1 / 100</span>
+                            </div>
 
-  <script>
-    // قائمة المفردات الشاملة المستخرجة من الصور
-    const wordsDatabase = [
-      // كلمات مذكر وتعتبر من النهايات المذكرة العامة أو الاستثناءات المذكرة
-      { fr: "thé", ar: "شاي", gender: "Masculin", note: "أحد المشروبات (الأيام والفصول واللغات والمشروبات مذكر)" },
-      { fr: "café", ar: "قهوة", gender: "Masculin", note: "أسماء المشروبات مذكرة بشكل عام" },
-      { fr: "jus", ar: "عصير", gender: "Masculin", note: "كلمة تنتهي بـ s أصلية وهي مذكر" },
-      { fr: "lait", ar: "حليب", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "problème", ar: "مشكلة", gender: "Masculin", note: "تنتهي بـ ème وتكون مذكر" },
-      { fr: "sucre", ar: "سكر", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "livre", ar: "كتاب", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "cahier", ar: "دفتر", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "stylo", ar: "قلم حبر", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "exercice", ar: "تمرين", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "texte", ar: "نص", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "séminaire", ar: "ندوة", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "outil", ar: "أداة", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "copain", ar: "صديق", gender: "Masculin", note: "مذكر (مقابلها copine مؤنث)" },
-      { fr: "ami", ar: "صديق", gender: "Masculin", note: "مذكر (مقابلها amie مؤنث)" },
-      { fr: "monde", ar: "عالم", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "travail", ar: "عمل", gender: "Masculin", note: "منتهي بـ ail فهو مذكر" },
-      { fr: "emploi", ar: "عمل / وظيفة", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "site", ar: "موقع", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "arbre", ar: "شجرة", gender: "Masculin", note: "أسماء الأشجار مذكرة" },
-      { fr: "essai", ar: "تجربة / محاولة", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "roman", ar: "رواية", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "siècle", ar: "قرن", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "concert", ar: "حفلة موسيقية", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "résultat", ar: "نتيجة", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "endroit", ar: "مكان", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "lieu", ar: "مكان", gender: "Masculin", note: "منتهي بـ eu فهو مذكر" },
-      { fr: "accident", ar: "حادث", gender: "Masculin", note: "منتهي بـ ment فهو مذكر" },
-      { fr: "bruit", ar: "ضجة / صوت", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "jour", ar: "يوم", gender: "Masculin", note: "اسم مذكر" },
-      { fr: "document", ar: "وثيقة", gender: "Masculin", note: "النهاية ment تدل على المذكر" },
+                            <div class="my-auto">
+                                <h3 id="fc-word" class="french-word text-4xl font-black text-slate-800 mb-2">
+                                    maison
+                                </h3>
+                                <p id="fc-translation" class="text-slate-500 text-lg font-semibold">(منزل)</p>
+                            </div>
 
-      // استثناءات المذكر مع النهاية age
-      { fr: "page", ar: "صفحة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la page)" },
-      { fr: "plage", ar: "شاطئ", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la plage)" },
-      { fr: "cage", ar: "قفص", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la cage)" },
-      { fr: "nage", ar: "سباحة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la nage)" },
-      { fr: "rage", ar: "غضب", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la rage)" },
-      { fr: "image", ar: "صورة", gender: "Féminin", note: "استثناء: تنتهي بـ age ولكنها مؤنثة (la image)" },
+                            <button onclick="event.stopPropagation(); speakText(document.getElementById('fc-word').innerText)" class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-2.5 rounded-full text-sm font-bold flex items-center space-x-1 space-x-reverse">
+                                <i class="fa-solid fa-volume-high"></i>
+                                <span>استمع للنطق</span>
+                            </button>
+                        </div>
 
-      // استثناءات النهاية eau
-      { fr: "eau", ar: "ماء", gender: "Féminin", note: "استثناء: تنتهي بـ eau ولكنها مؤنثة (l'eau)" },
-      { fr: "peau", ar: "جلد", gender: "Féminin", note: "استثناء: تنتهي بـ eau ولكنها مؤنثة (la peau)" },
+                        <!-- Back side -->
+                        <div class="flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br text-white shadow-xl" id="fc-back-bg">
+                            <div class="w-full flex justify-between items-center text-xs opacity-80 font-bold">
+                                <span>تفاصيل الجنس والقاعدة</span>
+                                <span id="fc-gender-badge" class="px-2 py-0.5 rounded-full bg-white/20">Féminin</span>
+                            </div>
 
-      // كلمات مؤنثة بالنهايات القياسية
-      { fr: "maison", ar: "منزل", gender: "Féminin", note: "منتهية بـ aison فهي مؤنثة" },
-      { fr: "mère", ar: "أم", gender: "Féminin", note: "مؤنث حقيقي" },
-      { fr: "sœur", ar: "أخت", gender: "Féminin", note: "مؤنث حقيقي" },
-      { fr: "femme", ar: "امرأة / زوجة", gender: "Féminin", note: "مؤنث حقيقي" },
-      { fr: "tante", ar: "عمة / خالة", gender: "Féminin", note: "مؤنث حقيقي" },
-      { fr: "fleur", ar: "زهرة", gender: "Féminin", note: "اسم مؤنث (la fleur)" },
-      { fr: "remarque", ar: "ملاحظة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "lampe", ar: "مصباح", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "herbe", ar: "عشب", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "voix", ar: "صوت", gender: "Féminin", note: "اسم مؤنث (la voix)" },
-      { fr: "histoire", ar: "قصة / تاريخ", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "revue", ar: "مجلة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "œuvre", ar: "عمل فني", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "vie", ar: "حياة", gender: "Féminin", note: "منتهية بـ ie فهي مؤنثة" },
-      { fr: "semaine", ar: "أسبوع", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "période", ar: "فترة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "porte", ar: "باب", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "fenêtre", ar: "نافذة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "chambre", ar: "غرفة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "école", ar: "مدرسة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "règle", ar: "قاعدة / مسطرة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "grammaire", ar: "قواعد", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "lettre", ar: "رسالة / حرف", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "aide", ar: "مساعدة", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "mer", ar: "بحر", gender: "Féminin", note: "اسم مؤنث (la mer)" },
-      { fr: "place", ar: "ساحة / مكان", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "opinion", ar: "رأي", gender: "Féminin", note: "اسم مؤنث (la opinion)" },
-      { fr: "rue", ar: "شارع", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "route", ar: "طريق", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "nuit", ar: "ليل", gender: "Féminin", note: "اسم مؤنث (la nuit)" },
-      { fr: "pluie", ar: "مطر", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "planète", ar: "كوكب", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "chose", ar: "شيء", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "cause", ar: "سبب", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "photo", ar: "صورة", gender: "Féminin", note: "اختصار photographie وهي مؤنث" },
-      { fr: "radio", ar: "راديو", gender: "Féminin", note: "اسم مؤنث (la radio)" },
-      { fr: "fin", ar: "نهاية", gender: "Féminin", note: "اسم مؤنث (la fin)" },
-      { fr: "couleur", ar: "لون", gender: "Féminin", note: "منتهية بـ eur وهي مؤنثة" },
-      { fr: "leçon", ar: "درس", gender: "Féminin", note: "اسم مؤنث" },
-      { fr: "erreur", ar: "خطأ", gender: "Féminin", note: "منتهية بـ eur وهي مؤنثة" },
+                            <div class="my-auto">
+                                <div id="fc-article" class="french-word text-3xl font-black mb-1">
+                                    la maison
+                                </div>
+                                <div id="fc-gender-text" class="text-xl font-bold mb-3">
+                                    اسم مؤنث (Féminin)
+                                </div>
+                                <p id="fc-rule" class="text-xs bg-black/20 p-3 rounded-xl backdrop-blur-sm max-w-xs leading-relaxed">
+                                    الأسماء التي تنتهي بـ -aison تكون مؤنثة.
+                                </p>
+                            </div>
 
-      // استثناءات النهايات المؤنثة (كلمات منتهية بنهايات مؤنثة ولكنها مذكر!)
-      { fr: "musée", ar: "متحف", gender: "Masculin", note: "استثناء: منتهي بـ ée ولكنه مذكر (le musée)" },
-      { fr: "lycée", ar: "مدرسة ثانوية", gender: "Masculin", note: "استثناء: منتهي بـ ée ولكنه مذكر (le lycée)" },
-      { fr: "silence", ar: "صمت", gender: "Masculin", note: "استثناء: منتهي بـ ence ولكنه مذكر (le silence)" },
-      { fr: "stade", ar: "ملعب", gender: "Masculin", note: "استثناء: منتهي بـ ade ولكنه مذكر (le stade)" },
-      { fr: "pamplemousse", ar: "ليمون هندي / بوملي", gender: "Masculin", note: "استثناء: مذكر (le pamplemousse)" },
-      { fr: "parapluie", ar: "مظلة", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le parapluie)" },
-      { fr: "incendie", ar: "حريق", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le incendie)" },
-      { fr: "génie", ar: "عبقرية / جني", gender: "Masculin", note: "استثناء: منتهي بـ ie ولكنه مذكر (le génie)" },
-      { fr: "été", ar: "صيف", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (l'été)" },
-      { fr: "côté", ar: "جانب", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (le côté)" },
-      { fr: "comité", ar: "لجنة", gender: "Masculin", note: "استثناء: منتهي بـ té ولكنه مذكر (le comité)" },
+                            <span class="text-xs opacity-75">انقر مرة أخرى للتراجع ↩️</span>
+                        </div>
+                    </div>
+                </div>
 
-      // كلمات تنتهي بـ S / X أصلية
-      { fr: "pays", ar: "بلد", gender: "Masculin", note: "تكون في المفرد والجمع بنفس الشكل وهي مذكر" },
-      { fr: "temps", ar: "وقت / طقس", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
-      { fr: "prix", ar: "سعر / جائزة", gender: "Masculin", note: "تنتهي بـ x أصلية وهي مذكر" },
-      { fr: "corps", ar: "جسم", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
-      { fr: "cours", ar: "درس / حصة", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
-      { fr: "mois", ar: "شهر", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" },
-      { fr: "repas", ar: "وجبة", gender: "Masculin", note: "تنتهي بـ s أصلية وهي مذكر" }
-    ];
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center mt-6">
+                    <button onclick="prevFlashcard()" class="bg-white hover:bg-slate-100 border text-slate-700 font-bold px-5 py-2.5 rounded-xl shadow-sm transition">
+                        <i class="fa-solid fa-arrow-right me-1"></i> السابقة
+                    </button>
+                    <button onclick="randomFlashcard()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-shuffle"></i> عشوائي
+                    </button>
+                    <button onclick="nextFlashcard()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition">
+                        التالية <i class="fa-solid fa-arrow-left ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    let currentQuestions = [];
-    let currentIndex = 0;
-    let score = 0;
-    const TOTAL_QUIZ_QUESTIONS = 20;
+        <!-- MODE 3: RULES & SUMMARY -->
+        <section id="section-rules" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-xl font-black text-slate-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-lightbulb text-amber-500 me-2"></i> القواعد الرئيسية ونهايات الأسماء (من كتابك)
+                </h2>
 
-    function shuffleArray(array) {
-      return [...array].sort(() => Math.random() - 0.5);
-    }
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Masculine Rules -->
+                    <div class="bg-blue-50/60 p-5 rounded-2xl border border-blue-100">
+                        <h3 class="font-bold text-blue-900 text-lg mb-3 flex items-center">
+                            <span class="bg-blue-600 text-white rounded-lg p-1 text-xs me-2">Le / Un</span>
+                            علامات الاسم المذكر (Masculin)
+                        </h3>
+                        <ul class="text-sm space-y-2 text-slate-700">
+                            <li>• **أيام الأسبوع والأشهر والفصول وأسماء اللغات والأشجار:** مذكر دائماً (مثل: l'été, le français, le pommier).</li>
+                            <li>• النهايات الشهيرة للمذكر: <code class="french-word bg-white px-1.5 py-0.5 rounded text-blue-700 font-bold">-ment</code>, <code class="french-word bg-white px-1.5 py-0.5 rounded text-blue-700 font-bold">-eau</code>, <code class="french-word bg-white px-1.5 py-0.5 rounded text-blue-700 font-bold">-age</code>, <code class="french-word bg-white px-1.5 py-0.5 rounded text-blue-700 font-bold">-isme</code>, <code class="french-word bg-white px-1.5 py-0.5 rounded text-blue-700 font-bold">-ail</code>.</li>
+                            <li>• الأسماء المنتهية بـ **S / X** في المفرد تبقى كما هي عند الجمع وتكون مذكر بشكل عام: <span class="french-word text-xs font-semibold">(le pays, le fils, le jus, le temps, le prix)</span>.</li>
+                        </ul>
+                    </div>
 
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('quiz-view').classList.add('hidden');
-      document.getElementById('rules-view').classList.add('hidden');
+                    <!-- Feminine Rules -->
+                    <div class="bg-pink-50/60 p-5 rounded-2xl border border-pink-100">
+                        <h3 class="font-bold text-pink-900 text-lg mb-3 flex items-center">
+                            <span class="bg-pink-600 text-white rounded-lg p-1 text-xs me-2">La / Une</span>
+                            علامات الاسم المؤنث (Féminin)
+                        </h3>
+                        <ul class="text-sm space-y-2 text-slate-700">
+                            <li>• النهايات الأكثر شهرة للتأنيث:</li>
+                            <li class="grid grid-cols-2 gap-1 text-xs font-semibold text-pink-800">
+                                <span>-tion / -sion / -xion</span>
+                                <span>-tte / -lle / -sse / -nne</span>
+                                <span>-ée (عامة)</span>
+                                <span>-ère / -euse / -ice</span>
+                                <span>-aison / -ise</span>
+                                <span>-té / -ude / -ade</span>
+                                <span>-ance / -ence</span>
+                                <span>-ure / -rie</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-      if (tab === 'quiz') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('quiz-view').classList.remove('hidden');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('rules-view').classList.remove('hidden');
-      }
-    }
+                <!-- Crucial Exceptions Table -->
+                <div class="mt-6">
+                    <h3 class="font-bold text-slate-800 text-md mb-3 flex items-center text-rose-600">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i> الاستثناءات القاتلة (مهمة جداً في الامتحانات!)
+                    </h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right border-collapse bg-white rounded-xl overflow-hidden border">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-bold">
+                                    <th class="p-3 border">القاعدة العادية</th>
+                                    <th class="p-3 border">الاستثناءات (عكس القاعدة!)</th>
+                                    <th class="p-3 border">التوضيح</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y text-slate-600">
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-blue-50/30">الكلمات المنتهية بـ <code class="french-word text-blue-700 font-bold">-age</code> تكون مذكر</td>
+                                    <td class="p-3 border font-bold text-pink-700 french-word">la page / la plage / la cage / la nage / la rage / la image</td>
+                                    <td class="p-3 border">هذه الكلمات **مؤنث** رغم انتهائها بـ -age!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-blue-50/30">الكلمات المنتهية بـ <code class="french-word text-blue-700 font-bold">-eau</code> تكون مذكر</td>
+                                    <td class="p-3 border font-bold text-pink-700 french-word">la peau / l'eau</td>
+                                    <td class="p-3 border">الجلد والماء **مؤنث** رغم انتهائهما بـ -eau!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-ée</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">le musée / le lycée</td>
+                                    <td class="p-3 border">المتحف والمدرسة الثانوية **مذكر**!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-té</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">l'été / le côté / le comité</td>
+                                    <td class="p-3 border">الصيف والجانب واللجنة **مذكر**!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-ence</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">le silence</td>
+                                    <td class="p-3 border">الصمت **مذكر**!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-ade</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">le stade</td>
+                                    <td class="p-3 border">الاستاد/الملعب **مذكر**!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-ère</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">le père / le frère / le ministère / le mystère</td>
+                                    <td class="p-3 border">الأب والأخ والوزارة والسر **مذكر**!</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold border bg-pink-50/30">الكلمات المنتهية بـ <code class="french-word text-pink-700 font-bold">-sse</code> تكون مؤنث</td>
+                                    <td class="p-3 border font-bold text-blue-700 french-word">le pamplemousse</td>
+                                    <td class="p-3 border">الليمون الهندي **مذكر**!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    function startQuiz() {
-      currentQuestions = shuffleArray(wordsDatabase).slice(0, TOTAL_QUIZ_QUESTIONS);
-      currentIndex = 0;
-      score = 0;
-      
-      document.getElementById('quiz-content').classList.remove('hidden');
-      document.getElementById('result-content').classList.add('hidden');
-      showQuestion();
-    }
+    </main>
 
-    function showQuestion() {
-      const q = currentQuestions[currentIndex];
-      document.getElementById('word-fr').innerText = q.fr;
-      document.getElementById('word-ar').innerText = q.ar;
-      document.getElementById('question-count').innerText = `الكلمة ${currentIndex + 1} من ${TOTAL_QUIZ_QUESTIONS}`;
-      document.getElementById('score-count').innerText = `النقاط: ${score}`;
-      
-      const progressPercent = ((currentIndex) / TOTAL_QUIZ_QUESTIONS) * 100;
-      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 text-xs border-t border-slate-800">
+        <p>تطبيق مراجعة واختبار قواعد اللغة الفرنسية التفاعلي | مصمم لجميع كلمات المنهج المرفقة</p>
+    </footer>
 
-      // Reset feedback and buttons
-      const fb = document.getElementById('feedback');
-      fb.style.display = 'none';
-      fb.className = 'feedback-box';
-      document.getElementById('next-btn').style.display = 'none';
-      
-      enableOptions(true);
-      speakCurrentWord();
-    }
+    <!-- App Logic Script -->
+    <script>
+        // Database of all words extracted from the images with exact properties and explanations
+        const vocabularyData = [
+            // IMAGE 4: Le (Masculin) Words
+            { word: "thé", arabic: "شاي", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للمشروبات." },
+            { word: "café", arabic: "قهوة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للمشروبات." },
+            { word: "jus", arabic: "عصير", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
+            { word: "lait", arabic: "حليب", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع." },
+            { word: "problème", arabic: "مشكلة", gender: "Masculin", article: "le", isException: true, rule: "كلمة تنتهي بـ -ème وهي مذكر." },
+            { word: "sucre", arabic: "سكر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للأطعمة." },
+            { word: "livre", arabic: "كتاب", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "cahier", arabic: "دفتر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -er." },
+            { word: "stylo", arabic: "قلم حبر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -o." },
+            { word: "exercice", arabic: "تمرين", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
+            { word: "texte", arabic: "نص", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -exte." },
+            { word: "séminaire", arabic: "ندوة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "outil", arabic: "أداة", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
+            { word: "copain", arabic: "صديق", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر للفاعل العاقل." },
+            { word: "ami", arabic: "صديق", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر للفاعل العاقل." },
+            { word: "monde", arabic: "عالم", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "travail", arabic: "عمل", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -ail تكون مذكرة." },
+            { word: "emploi", arabic: "وظيفة", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
+            { word: "site", arabic: "موقع", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "arbre", arabic: "شجرة", gender: "Masculin", article: "l'", isException: false, rule: "جميع أسماء الأشجار مذكر في الفرنسية." },
+            { word: "essai", arabic: "تجربة / مقال", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -ai." },
+            { word: "roman", arabic: "رواية", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -an." },
+            { word: "siècle", arabic: "قرن", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "concert", arabic: "حفلة موسيقية", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -ert." },
+            { word: "résultat", arabic: "نتيجة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -at." },
+            { word: "endroit", arabic: "مكان", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -oit." },
+            { word: "lieu", arabic: "مكان", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -eu تكون مذكرة." },
+            { word: "accident", arabic: "حادث", gender: "Masculin", article: "l'", isException: false, rule: "الأسماء المنتهية بـ -ent تكون مذكرة." },
+            { word: "bruit", arabic: "ضجة / صوت", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
+            { word: "jour", arabic: "يوم", gender: "Masculin", article: "le", isException: false, rule: "أيام الأسبوع وأوقات اليوم مذكر بشكل عام." },
+            { word: "cadeau", arabic: "هدية", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -eau تكون مذكرة عادة." },
+            { word: "document", arabic: "وثيقة", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -ment تكون مذكرة." },
 
-    function checkAnswer(selectedGender) {
-      enableOptions(false);
-      const q = currentQuestions[currentIndex];
-      const fb = document.getElementById('feedback');
-      const isCorrect = selectedGender === q.gender;
+            // IMAGE 1: La (Féminin) Words
+            { word: "mère", arabic: "أم", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي للإناث." },
+            { word: "sœur", arabic: "أخت", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي للإناث." },
+            { word: "femme", arabic: "امرأة / زوجة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي." },
+            { word: "tante", arabic: "عمة / خالة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي." },
+            { word: "fleur", arabic: "زهرة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -eur (غير الفاعلين) مؤنثة." },
+            { word: "remarque", arabic: "ملاحظة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "lampe", arabic: "مصباح", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "herbe", arabic: "عشب", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث." },
+            { word: "voix", arabic: "صوت", gender: "Féminin", article: "la", isException: true, rule: "كلمة مؤنثة تنتهي بـ -x." },
+            { word: "histoire", arabic: "قصة / تاريخ", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -oire." },
+            { word: "revue", arabic: "مجلة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ue." },
+            { word: "œuvre", arabic: "عمل فني / إنجاز", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -vre." },
+            { word: "amie", arabic: "صديقة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث للإناث." },
+            { word: "copine", arabic: "صديقة / زميلة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "vie", arabic: "حياة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -ie تكون مؤنثة." },
+            { word: "semaine", arabic: "أسبوع", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -aine." },
+            { word: "période", arabic: "فترة زمنية", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ode." },
+            { word: "porte", arabic: "باب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -te." },
+            { word: "fenêtre", arabic: "نافذة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -tre." },
+            { word: "chambre", arabic: "غرفة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -bre." },
+            { word: "école", arabic: "مدرسة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -ole." },
+            { word: "règle", arabic: "قاعدة / مسطرة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "grammaire", arabic: "قواعد اللغة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -aire." },
+            { word: "lettre", arabic: "رسالة / حرف", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -tre." },
+            { word: "aide", arabic: "مساعدة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -de." },
+            { word: "mer", arabic: "بحر", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "place", arabic: "ميدان / مكان", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ace." },
+            { word: "opinion", arabic: "رأي", gender: "Féminin", article: "l'", isException: false, rule: "الأسماء المنتهية بـ -ion مؤنثة." },
+            { word: "rue", arabic: "شارع", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ue." },
+            { word: "route", arabic: "طريق", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -te." },
+            { word: "voisine", arabic: "جارة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث للإناث." },
+            { word: "cousine", arabic: "ابنة عم / خالة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث للإناث." },
+            { word: "région", arabic: "منطقة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -gion مؤنثة." },
+            { word: "robe", arabic: "فستان", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -be." },
+            { word: "nuit", arabic: "ليل", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "pluie", arabic: "مطر", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -ie مؤنثة." },
+            { word: "planète", arabic: "كوكب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ète." },
+            { word: "chose", arabic: "شيء", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ose." },
+            { word: "cause", arabic: "سبب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ause." },
+            { word: "photo", arabic: "صورة", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة photographie." },
+            { word: "moto", arabic: "دراجة نارية", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة motocyclette." },
+            { word: "radio", arabic: "راديو", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة radiophonie." },
+            { word: "fin", arabic: "نهاية", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
+            { word: "cour", arabic: "فناء / ساحة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -our." },
 
-      if (isCorrect) {
-        score++;
-        fb.className = 'feedback-box correct';
-        fb.innerHTML = `<b>إجابة صحيحة! 🎉</b><br>الكلمة <b>${q.fr}</b> هي ${q.gender === 'Masculin' ? 'مذكر (Le/Un)' : 'مؤنث (La/Une)'}.<br><small>${q.note}</small>`;
-      } else {
-        fb.className = 'feedback-box wrong';
-        fb.innerHTML = `<b>إجابة خاطئة ❌</b><br>الصواب: الكلمة <b>${q.fr}</b> هي <b>${q.gender === 'Masculin' ? 'مذكر (Le/Un)' : 'مؤنث (La/Une)'}</b>.<br><small>${q.note}</small>`;
-      }
+            // EXCEPTIONS FROM IMAGE 3 & 4 (High Exam Focus)
+            { word: "peau", arabic: "جلد", gender: "Féminin", article: "la", isException: true, rule: "استثناء هام! معظم الكلمات المنتهية بـ -eau مذكر ما عدا (peau) و (eau)." },
+            { word: "eau", arabic: "ماء", gender: "Féminin", article: "l'", isException: true, rule: "استثناء هام! تنتهي بـ -eau ولكنها كلمة مؤنثة." },
+            { word: "page", arabic: "صفحة", gender: "Féminin", article: "la", isException: true, rule: "استثناء! مقطع -age مذكر عادةً ما عدا: page, plage, cage, nage, rage, image." },
+            { word: "plage", arabic: "شاطئ", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
+            { word: "cage", arabic: "قفص", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
+            { word: "nage", arabic: "سباحة", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
+            { word: "rage", arabic: "غضب / داء الكلب", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
+            { word: "image", arabic: "صورة", gender: "Féminin", article: "l'", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
+            { word: "parapluie", arabic: "مظلة / شمسية", gender: "Féminin", article: "le", isException: true, rule: "استثناء! مذكر رغم انتهائها بـ -ie." },
+            { word: "incendie", arabic: "حريق", gender: "Masculin", article: "l'", isException: true, rule: "اسم مذكر رغم انتهائه بـ -ie." },
+            { word: "génie", arabic: "عبقرية / عبقري", gender: "Masculin", article: "le", isException: true, rule: "اسم مذكر ينتهي بـ -ie." },
+            { word: "silence", arabic: "صمت", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -ence مؤنثة عادة ما عدا le silence (مذكر)." },
+            { word: "stade", arabic: "ملعب / استاد", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -ade مؤنثة ما عدا le stade (مذكر)." },
+            { word: "été", arabic: "صيف", gender: "Masculin", article: "l'", isException: true, rule: "استثناء! نهايات -té مؤنثة عادة ما عدا l'été, le côté, le comité." },
+            { word: "côté", arabic: "جانب", gender: "Masculin", article: "le", isException: true, rule: "استثناء من نهايات -té المؤنثة (مذكر)." },
+            { word: "comité", arabic: "لجنة", gender: "Masculin", article: "le", isException: true, rule: "استثناء من نهايات -té المؤنثة (مذكر)." },
+            { word: "musée", arabic: "متحف", gender: "Masculin", article: "le", isException: true, rule: "استثناء شهير جداً! نهايات -ée مؤنثة ما عدا le musée و le lycée (مذكر)." },
+            { word: "lycée", arabic: "مدرسة ثانوية", gender: "Masculin", article: "le", isException: true, rule: "استثناء شهير جداً! مذكر رغم انتهائه بـ -ée." },
+            { word: "pamplemousse", arabic: "ليمون هندي (جريبت فروت)", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -sse مؤنثة ما عدا le pamplemousse (مذكر)." },
+            { word: "père", arabic: "أب", gender: "Masculin", article: "le", isException: true, rule: "مذكر طبيعي للذكور رغم انتهائه بـ -ère." },
+            { word: "frère", arabic: "أخ", gender: "Masculin", article: "le", isException: true, rule: "مذكر طبيعي للذكور رغم انتهائه بـ -ère." },
+            { word: "ministère", arabic: "وزارة", gender: "Masculin", article: "le", isException: true, rule: "استثناء! اسم مذكر ينتهي بـ -ère." },
+            { word: "mystère", arabic: "سر / غموض", gender: "Masculin", article: "le", isException: true, rule: "استثناء! اسم مذكر ينتهي بـ -ère." },
 
-      document.getElementById('score-count').innerText = `النقاط: ${score}`;
-      fb.style.display = 'block';
-      document.getElementById('next-btn').style.display = 'block';
-    }
+            // IMAGE 2: Words ending in S / X in Singular
+            { word: "pays", arabic: "بلد / دولة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد والجمع." },
+            { word: "fils", arabic: "ابن", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
+            { word: "jus", arabic: "عصير", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
+            { word: "héros", arabic: "بطل", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "temps", arabic: "وقت / طقس", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "succès", arabic: "نجاح", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "palais", arabic: "قصر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "discours", arabic: "خطاب / كلمة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "mois", arabic: "شهر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "corps", arabic: "جسم", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "cours", arabic: "درس / حصة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "bus", arabic: "حافلة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "repas", arabic: "وجبة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "avis", arabic: "رأي", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
+            { word: "prix", arabic: "سعر / جائزة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -x." },
+            { word: "fois", arabic: "مرة", gender: "Féminin", article: "la", isException: true, rule: "اسم مؤنث ينتهي بـ -s في المفرد." },
+            { word: "paix", arabic: "سلام", gender: "Féminin", article: "la", isException: true, rule: "اسم مؤنث ينتهي بـ -x." },
 
-    function enableOptions(enable) {
-      const btns = document.querySelectorAll('.option-btn');
-      btns.forEach(btn => {
-        btn.style.pointerEvents = enable ? 'auto' : 'none';
-        btn.style.opacity = enable ? '1' : '0.6';
-      });
-    }
+            // SUFFIX RULE EXAMPLES FROM IMAGE 3
+            { word: "action", arabic: "حدث / عمل", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -tion مؤنثة دائماً." },
+            { word: "cigarette", arabic: "سيجارة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -tte مؤنثة." },
+            { word: "fille", arabic: "بنت / ابنة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -lle مؤنثة." },
+            { word: "classe", arabic: "فصل دراسي", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -sse مؤنثة." },
+            { word: "personne", arabic: "شخص", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -nne مؤنثة." },
+            { word: "année", arabic: "سنة / عام", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ée مؤنثة." },
+            { word: "chanteuse", arabic: "مغنية", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -euse مؤنثة." },
+            { word: "matière", arabic: "مادة دراسية", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ère مؤنثة." },
+            { word: "chemise", arabic: "قميص", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ise مؤنثة." },
+            { word: "maison", arabic: "منزل", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -aison مؤنثة." },
+            { word: "activité", arabic: "نشاط", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -té مؤنثة." },
+            { word: "télévision", arabic: "تلفزيون", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -sion مؤنثة." },
+            { word: "réflexion", arabic: "تفكير / تفكر", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -xion مؤنثة." },
+            { word: "habitude", arabic: "عادة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ude مؤنثة." },
+            { word: "étude", arabic: "دراسة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ude مؤنثة." },
+            { word: "limonade", arabic: "عصير ليمون", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ade مؤنثة." },
+            { word: "élégance", arabic: "أناقة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ance مؤنثة." },
+            { word: "patience", arabic: "صبر", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ence مؤنثة." },
+            { word: "voiture", arabic: "سيارة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ure مؤنثة." },
+            { word: "boulangerie", arabic: "مخبز", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -rie مؤنثة." },
+            { word: "actrice", arabic: "ممثلة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -rice مؤنثة." }
+        ];
 
-    function nextQuestion() {
-      currentIndex++;
-      if (currentIndex < TOTAL_QUIZ_QUESTIONS) {
-        showQuestion();
-      } else {
-        showResults();
-      }
-    }
+        // Quiz App State
+        let currentQuizList = [];
+        let currentQuestionIndex = 0;
+        let scoreCorrect = 0;
+        let scoreIncorrect = 0;
+        let incorrectQuestions = [];
+        let isAnswered = false;
 
-    function showResults() {
-      document.getElementById('quiz-content').classList.add('hidden');
-      document.getElementById('result-content').classList.remove('hidden');
-      
-      const percentage = Math.round((score / TOTAL_QUIZ_QUESTIONS) * 100);
-      document.getElementById('final-score').innerText = `${percentage}%`;
+        // Flashcards App State
+        let flashcardList = [];
+        let flashcardIndex = 0;
+        let isCardFlipped = false;
 
-      let msg = "";
-      if (percentage >= 90) msg = "ممتاز جداً! لديك إتقان تام لقواعد الاستثناءات والتذكير والتأنيث 👏";
-      else if (percentage >= 70) msg = "أداء جيد جداً! راجع بعض الاستثناءات البسيطة وستصل للعلامة الكاملة ⭐";
-      else msg = "يحتاج مستواك إلى بعض المراجعة، اطلع على قسم القواعد واستكشف الاستثناءات ثم حاول مجدداً 📚";
+        // Speech Synthesis Initialization
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop ongoing speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
-      document.getElementById('result-message').innerText = msg;
-    }
+        function speakCurrentWord() {
+            if (currentQuizList[currentQuestionIndex]) {
+                speakText(currentQuizList[currentQuestionIndex].word);
+            }
+        }
 
-    function speakCurrentWord() {
-      if ('speechSynthesis' in window) {
-        const q = currentQuestions[currentIndex];
-        const utterance = new SpeechSynthesisUtterance(q.fr);
-        utterance.lang = 'fr-FR';
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
+        // Mode Switching
+        function switchMode(mode) {
+            document.getElementById('section-quiz').classList.add('hidden');
+            document.getElementById('section-flashcards').classList.add('hidden');
+            document.getElementById('section-rules').classList.add('hidden');
 
-    // Start on load
-    startQuiz();
-  </script>
+            document.getElementById('nav-quiz').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
+            document.getElementById('nav-flashcards').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
+            document.getElementById('nav-rules').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
+
+            if (mode === 'quiz') {
+                document.getElementById('section-quiz').classList.remove('hidden');
+                document.getElementById('nav-quiz').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
+            } else if (mode === 'flashcards') {
+                document.getElementById('section-flashcards').classList.remove('hidden');
+                document.getElementById('nav-flashcards').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
+                initFlashcards();
+            } else if (mode === 'rules') {
+                document.getElementById('section-rules').classList.remove('hidden');
+                document.getElementById('nav-rules').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
+            }
+        }
+
+        // Utility: Shuffle Array
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            let newArr = [...array];
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArr[currentIndex], newArr[randomIndex]] = [newArr[randomIndex], newArr[currentIndex]];
+            }
+            return newArr;
+        }
+
+        // Quiz Logic
+        function startNewQuiz() {
+            const filterType = document.getElementById('filter-type').value;
+            const questionCountVal = document.getElementById('question-count').value;
+
+            // Filter words
+            let filtered = vocabularyData.filter(item => {
+                if (filterType === 'exceptions') return item.isException;
+                if (filterType === 'masculin') return item.gender === 'Masculin';
+                if (filterType === 'feminin') return item.gender === 'Féminin';
+                return true;
+            });
+
+            if (filtered.length === 0) filtered = [...vocabularyData];
+
+            // Shuffle
+            currentQuizList = shuffle(filtered);
+
+            // Limit count
+            if (questionCountVal !== 'all') {
+                const count = parseInt(questionCountVal);
+                currentQuizList = currentQuizList.slice(0, count);
+            }
+
+            // Reset state
+            currentQuestionIndex = 0;
+            scoreCorrect = 0;
+            scoreIncorrect = 0;
+            incorrectQuestions = [];
+            isAnswered = false;
+
+            document.getElementById('score-correct').innerText = "0";
+            document.getElementById('score-incorrect').innerText = "0";
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-config').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            isAnswered = false;
+            const currentObj = currentQuizList[currentQuestionIndex];
+
+            // Progress text and bar
+            const total = currentQuizList.length;
+            document.getElementById('quiz-progress-text').innerText = `السؤال ${currentQuestionIndex + 1} من ${total}`;
+            const pct = ((currentQuestionIndex) / total) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            // Display Word
+            document.getElementById('current-word').innerText = currentObj.word;
+            document.getElementById('current-translation').innerText = `(${currentObj.arabic})`;
+
+            // Reset Option Buttons
+            const btnM = document.getElementById('btn-masculin');
+            const btnF = document.getElementById('btn-feminin');
+
+            btnM.disabled = false;
+            btnF.disabled = false;
+            btnM.className = "bg-blue-50 hover:bg-blue-600 hover:text-white border-2 border-blue-200 text-blue-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group";
+            btnF.className = "bg-pink-50 hover:bg-pink-600 hover:text-white border-2 border-pink-200 text-pink-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group";
+
+            // Hide Feedback
+            document.getElementById('feedback-panel').classList.add('hidden');
+
+            // Auto Speak Word
+            speakText(currentObj.word);
+        }
+
+        function checkAnswer(selectedGender) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const currentObj = currentQuizList[currentQuestionIndex];
+            const isCorrect = (selectedGender === currentObj.gender);
+
+            const btnM = document.getElementById('btn-masculin');
+            const btnF = document.getElementById('btn-feminin');
+            btnM.disabled = true;
+            btnF.disabled = true;
+
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackRule = document.getElementById('feedback-rule');
+
+            const fullArticle = currentObj.article === "l'" ? `l'${currentObj.word}` : `${currentObj.article} ${currentObj.word}`;
+
+            if (isCorrect) {
+                scoreCorrect++;
+                document.getElementById('score-correct').innerText = scoreCorrect;
+
+                feedbackPanel.className = "mt-6 p-5 rounded-2xl border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+                feedbackIcon.innerText = "🎉";
+                feedbackTitle.innerText = "إجابة صحيحة وممتازة!";
+                feedbackText.innerHTML = `الكلمة <strong class="french-word font-bold text-lg">${fullArticle}</strong> هي كلمة <strong>${currentObj.gender === 'Masculin' ? 'مذكرة (Masculin)' : 'مؤنثة (Féminin)'}</strong>.`;
+            } else {
+                scoreIncorrect++;
+                document.getElementById('score-incorrect').innerText = scoreIncorrect;
+                incorrectQuestions.push(currentObj);
+
+                feedbackPanel.className = "mt-6 p-5 rounded-2xl border transition-all bg-rose-50 border-rose-200 text-rose-900";
+                feedbackIcon.innerText = "❌";
+                feedbackTitle.innerText = "إجابة خاطئة!";
+                feedbackText.innerHTML = `الإجابة الصحيحة هي: <strong class="french-word font-bold text-lg text-rose-700">${fullArticle}</strong> - اسم <strong>${currentObj.gender === 'Masculin' ? 'مذكر (Masculin)' : 'مؤنث (Féminin)'}</strong>.`;
+            }
+
+            // Highlight chosen/correct button
+            if (selectedGender === 'Masculin') {
+                btnM.className = isCorrect ? "bg-emerald-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg" : "bg-rose-600 text-white font-bold text-xl py-4 rounded-2xl opacity-80";
+            } else {
+                btnF.className = isCorrect ? "bg-emerald-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg" : "bg-rose-600 text-white font-bold text-xl py-4 rounded-2xl opacity-80";
+            }
+
+            // Set Rule Explanation
+            feedbackRule.innerHTML = `<i class="fa-solid fa-circle-info me-1 text-blue-600"></i> <strong>سبب التحديد / القاعدة:</strong> ${currentObj.rule}`;
+            feedbackPanel.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentQuizList.length) {
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-box').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+
+            const total = currentQuizList.length;
+            const pct = Math.round((scoreCorrect / total) * 100);
+
+            document.getElementById('result-total').innerText = total;
+            document.getElementById('result-correct').innerText = scoreCorrect;
+            document.getElementById('result-percent').innerText = `${pct}%`;
+
+            const incorrectWrapper = document.getElementById('incorrect-words-wrapper');
+            const incorrectList = document.getElementById('incorrect-words-list');
+
+            if (incorrectQuestions.length > 0) {
+                incorrectWrapper.classList.remove('hidden');
+                incorrectList.innerHTML = incorrectQuestions.map(item => `
+                    <div class="flex justify-between items-center text-xs bg-white p-2 rounded-lg border">
+                        <span class="french-word font-bold text-slate-800">${item.article === "l'" ? `l'${item.word}` : `${item.article} ${item.word}`}</span>
+                        <span class="text-slate-500">(${item.arabic})</span>
+                        <span class="font-bold ${item.gender === 'Masculin' ? 'text-blue-600' : 'text-pink-600'}">${item.gender}</span>
+                    </div>
+                `).join('');
+            } else {
+                incorrectWrapper.classList.add('hidden');
+            }
+        }
+
+        // Flashcards Logic
+        function initFlashcards() {
+            const filter = document.getElementById('flashcard-filter').value;
+            flashcardList = vocabularyData.filter(item => {
+                if (filter === 'masculin') return item.gender === 'Masculin';
+                if (filter === 'feminin') return item.gender === 'Féminin';
+                if (filter === 'exceptions') return item.isException;
+                return true;
+            });
+
+            flashcardIndex = 0;
+            renderFlashcard();
+        }
+
+        function renderFlashcard() {
+            if (flashcardList.length === 0) return;
+
+            const card = flashcardList[flashcardIndex];
+            isCardFlipped = false;
+            document.getElementById('flashcard-container').classList.remove('flipped');
+
+            // Front
+            document.getElementById('fc-index').innerText = `${flashcardIndex + 1} / ${flashcardList.length}`;
+            document.getElementById('fc-word').innerText = card.word;
+            document.getElementById('fc-translation').innerText = `(${card.arabic})`;
+
+            // Back
+            const fullArticle = card.article === "l'" ? `l'${card.word}` : `${card.article} ${card.word}`;
+            document.getElementById('fc-article').innerText = fullArticle;
+            document.getElementById('fc-gender-text').innerText = card.gender === 'Masculin' ? 'اسم مذكر (Masculin)' : 'اسم مؤنث (Féminin)';
+            document.getElementById('fc-gender-badge').innerText = card.gender;
+            document.getElementById('fc-rule').innerText = card.rule;
+
+            const backBg = document.getElementById('fc-back-bg');
+            if (card.gender === 'Masculin') {
+                backBg.className = "flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-blue-600 to-indigo-800 text-white shadow-xl";
+            } else {
+                backBg.className = "flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-pink-600 to-rose-800 text-white shadow-xl";
+            }
+        }
+
+        function flipCard() {
+            isCardFlipped = !isCardFlipped;
+            const container = document.getElementById('flashcard-container');
+            if (isCardFlipped) {
+                container.classList.add('flipped');
+            } else {
+                container.classList.remove('flipped');
+            }
+        }
+
+        function nextFlashcard() {
+            if (flashcardIndex < flashcardList.length - 1) {
+                flashcardIndex++;
+                renderFlashcard();
+            }
+        }
+
+        function prevFlashcard() {
+            if (flashcardIndex > 0) {
+                flashcardIndex--;
+                renderFlashcard();
+            }
+        }
+
+        function randomFlashcard() {
+            flashcardIndex = Math.floor(Math.random() * flashcardList.length);
+            renderFlashcard();
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            startNewQuiz();
+        };
+    </script>
 </body>
 </html>
+
