@@ -737,24 +737,7 @@
 
             const fullArticle = currentObj.article === "l'" ? `l'${currentObj.word}` : `${currentObj.article} ${currentObj.word}`;
 
-            if (isCorrect) {
-                scoreCorrect++;
-                document.getElementById('score-correct').innerText = scoreCorrect;
-
-                feedbackPanel.className = "mt-6 p-5 rounded-2xl border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
-                feedbackIcon.innerText = "🎉";
-                feedbackTitle.innerText = "إجابة صحيحة وممتازة!";
-                feedbackText.innerHTML = `الكلمة <strong class="french-word font-bold text-lg">${fullArticle}</strong> هي كلمة <strong>${currentObj.gender === 'Masculin' ? 'مذكرة (Masculin)' : 'مؤنثة (Féminin)'}</strong>.`;
-            } else {
-                scoreIncorrect++;
-                document.getElementById('score-incorrect').innerText = scoreIncorrect;
-                incorrectQuestions.push(currentObj);
-
-                feedbackPanel.className = "mt-6 p-5 rounded-2xl border transition-all bg-rose-50 border-rose-200 text-rose-900";
-                feedbackIcon.innerText = "❌";
-                feedbackTitle.innerText = "إجابة خاطئة!";
-                feedbackText.innerHTML = `الإجابة الصحيحة هي: <strong class="french-word font-bold text-lg text-rose-700">${fullArticle}</strong> - اسم <strong>${currentObj.gender === 'Masculin' ? 'مذكر (Masculin)' : 'مؤنث (Féminin)'}</strong>.`;
-            }
+            
 
             // Highlight chosen/correct button
             if (selectedGender === 'Masculin') {
