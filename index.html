@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الجنس في اللغة الفرنسي</title>
+    <title>اختبار الجنس في اللغة الفرنسية</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js CDN for Interactive Chart -->
@@ -128,31 +128,23 @@
         }
 
         /* Quiz Display */
-        .word-badge {
-            display: inline-block;
-            background-color: #EEF2FF;
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+        .word-display-container {
+            text-align: center;
+            margin: 20px 0 35px 0;
         }
 
         .word-display {
-            font-size: 2.5rem;
+            font-size: 2.6rem;
             font-weight: 800;
-            text-align: center;
-            margin: 10px 0 5px 0;
             color: var(--text-main);
             direction: ltr;
+            line-height: 1.2;
         }
 
         .word-meaning {
-            text-align: center;
             color: var(--text-muted);
-            font-size: 1.05rem;
-            margin-bottom: 30px;
+            font-size: 1.1rem;
+            margin-top: 6px;
             font-weight: 500;
         }
 
@@ -214,29 +206,25 @@
             animation: shake 0.4s ease;
         }
 
-        /* Results Screen */
+        /* Results Screen & Centered Chart */
         .result-screen {
             display: none;
             text-align: center;
         }
 
-        /* تعديل وحساب تمركز الرسم البياني */
         .chart-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 180px;
+            width: 180px;
             height: 180px;
-            max-height: 180px;
             margin: 20px auto;
             display: flex;
             justify-content: center;
-            align-content: center;
             align-items: center;
         }
 
         .chart-wrapper canvas {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 100% !important;
+            max-height: 100% !important;
         }
 
         .chart-center-text {
@@ -448,7 +436,7 @@
 
         @media (max-width: 480px) {
             .card { padding: 20px; }
-            .word-display { font-size: 2rem; }
+            .word-display { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -478,8 +466,8 @@
                 </div>
             </div>
 
-            <div style="text-align: center;">
-                <span class="word-badge" id="categoryBadge">اسم</span>
+            <!-- Clean Display Area without Top Categories -->
+            <div class="word-display-container">
                 <div class="word-display" id="frenchWord">Maison</div>
                 <div class="word-meaning" id="arabicMeaning">المنزل</div>
             </div>
@@ -561,158 +549,146 @@
     <script>
         /* Database Model */
         const wordsDatabase = [
-            { french: "Thé", arabic: "شاي", gender: "M", category: "مذكر" },
-            { french: "Café", arabic: "قهوة", gender: "M", category: "مذكر" },
-            { french: "Jus", arabic: "عصير", gender: "M", category: "مذكر" },
-            { french: "Lait", arabic: "حليب", gender: "M", category: "مذكر" },
-            { french: "Problème", arabic: "مشكلة", gender: "M", category: "مذكر" },
-            { french: "Sucre", arabic: "سكر", gender: "M", category: "مذكر" },
-            { french: "Livre", arabic: "كتاب", gender: "M", category: "مذكر" },
-            { french: "Cahier", arabic: "دفتر", gender: "M", category: "مذكر" },
-            { french: "Stylo", arabic: "قلم حبر", gender: "M", category: "مذكر" },
-            { french: "Exercice", arabic: "تمرين", gender: "M", category: "مذكر" },
-            { french: "Texte", arabic: "نص", gender: "M", category: "مذكر" },
-            { french: "Séminaire", arabic: "ندوة", gender: "M", category: "مذكر" },
-            { french: "Outil", arabic: "أداة", gender: "M", category: "مذكر" },
-            { french: "Copain", arabic: "صديق", gender: "M", category: "مذكر" },
-            { french: "Ami", arabic: "صديق", gender: "M", category: "مذكر" },
-            { french: "Monde", arabic: "عالم", gender: "M", category: "مذكر" },
-            { french: "Travail", arabic: "عمل", gender: "M", category: "مذكر" },
-            { french: "Emploi", arabic: "موقع / عمل", gender: "M", category: "مذكر" },
-            { french: "Site", arabic: "موقع", gender: "M", category: "مذكر" },
-            { french: "Arbre", arabic: "شجرة", gender: "M", category: "مذكر" },
-            { french: "Essai", arabic: "تجربة / مقال", gender: "M", category: "مذكر" },
-            { french: "Roman", arabic: "رواية", gender: "M", category: "مذكر" },
-            { french: "Siècle", arabic: "قرن", gender: "M", category: "مذكر" },
-            { french: "Concert", arabic: "حفلة موسيقية", gender: "M", category: "مذكر" },
-            { french: "Résultat", arabic: "نتيجة", gender: "M", category: "مذكر" },
-            { french: "Endroit", arabic: "مكان", gender: "M", category: "مذكر" },
-            { french: "Lieu", arabic: "مكان", gender: "M", category: "مذكر" },
-            { french: "Accident", arabic: "حادث", gender: "M", category: "مذكر" },
-            { french: "Bruit", arabic: "ضجة / صوت", gender: "M", category: "مذكر" },
-            { french: "Jour", arabic: "يوم", gender: "M", category: "مذكر" },
-            { french: "L'eau", arabic: "الماء", gender: "F", category: "مؤنث" },
-            { french: "Document", arabic: "وثيقة", gender: "M", category: "مذكر" },
-
-            // استثناءات النهاية age (المذكرة) واستثناءاتها المؤنثة
-            { french: "Page", arabic: "صفحة", gender: "F", category: "استثناء مؤنث" },
-            { french: "Plage", arabic: "شاطئ", gender: "F", category: "استثناء مؤنث" },
-            { french: "Cage", arabic: "قفس", gender: "F", category: "استثناء مؤنث" },
-            { french: "Nage", arabic: "سباحة", gender: "F", category: "استثناء مؤنث" },
-            { french: "Rage", arabic: "غضب", gender: "F", category: "استثناء مؤنث" },
-            { french: "Image", arabic: "صورة", gender: "F", category: "استثناء مؤنث" },
-
-            // كلمات ينتهي مفردها بـ S/X وهي مذكرة
-            { french: "Pays", arabic: "بلد", gender: "M", category: "مذكر (S/X)" },
-            { french: "Fils", arabic: "ابن", gender: "M", category: "مذكر (S/X)" },
-            { french: "Héros", arabic: "بطل", gender: "M", category: "مذكر (S/X)" },
-            { french: "Temps", arabic: "وقت / طقس", gender: "M", category: "مذكر (S/X)" },
-            { french: "Succès", arabic: "نجاح", gender: "M", category: "مذكر (S/X)" },
-            { french: "Palais", arabic: "قصر", gender: "M", category: "مذكر (S/X)" },
-            { french: "Discours", arabic: "خطاب", gender: "M", category: "مذكر (S/X)" },
-            { french: "Mois", arabic: "شهر", gender: "M", category: "مذكر (S/X)" },
-            { french: "Corps", arabic: "جسم", gender: "M", category: "مذكر (S/X)" },
-            { french: "Cours", arabic: "درس / حصة", gender: "M", category: "مذكر (S/X)" },
-            { french: "Bus", arabic: "حافلة", gender: "M", category: "مذكر (S/X)" },
-            { french: "Repas", arabic: "وجبة", gender: "M", category: "مذكر (S/X)" },
-            { french: "Avis", arabic: "رأي", gender: "M", category: "مذكر (S/X)" },
-            { french: "Prix", arabic: "سعر / جائزة", gender: "M", category: "مذكر (S/X)" },
-
-            // كلمات مؤنثة ينتهي مفردها بـ S/X (استثناءات)
-            { french: "Fois", arabic: "مرة", gender: "F", category: "استثناء مؤنث" },
-            { french: "Vacances", arabic: "عطلة", gender: "F", category: "استثناء مؤنث" },
-            { french: "Paix", arabic: "سلام", gender: "F", category: "استثناء مؤنث" },
-            { french: "Voix", arabic: "صوت", gender: "F", category: "استثناء مؤنث" },
-
-            // --- كلمات مؤنثة (Féminin - Une / La) ---
-            { french: "Mère", arabic: "أم", gender: "F", category: "مؤنث" },
-            { french: "Sœur", arabic: "أخت", gender: "F", category: "مؤنث" },
-            { french: "Femme", arabic: "امرأة / زوجة", gender: "F", category: "مؤنث" },
-            { french: "Tante", arabic: "عمة / خالة", gender: "F", category: "مؤنث" },
-            { french: "Fleur", arabic: "زهرة", gender: "F", category: "مؤنث" },
-            { french: "Remarque", arabic: "ملاحظة", gender: "F", category: "مؤنث" },
-            { french: "Lampe", arabic: "مصباح", gender: "F", category: "مؤنث" },
-            { french: "Herbe", arabic: "عشب", gender: "F", category: "مؤنث" },
-            { french: "Histoire", arabic: "تاريخ / قصة", gender: "F", category: "مؤنث" },
-            { french: "Revue", arabic: "مجلة", gender: "F", category: "مؤنث" },
-            { french: "Œuvre", arabic: "عمل فني", gender: "F", category: "مؤنث" },
-            { french: "Amie", arabic: "صديقة", gender: "F", category: "مؤنث" },
-            { french: "Copine", arabic: "صديقة", gender: "F", category: "مؤنث" },
-            { french: "Vie", arabic: "حياة", gender: "F", category: "مؤنث" },
-            { french: "Semaine", arabic: "أسبوع", gender: "F", category: "مؤنث" },
-            { french: "Période", arabic: "فترة", gender: "F", category: "مؤنث" },
-            { french: "Porte", arabic: "باب", gender: "F", category: "مؤنث" },
-            { french: "Fenêtre", arabic: "نافذة", gender: "F", category: "مؤنث" },
-            { french: "Chambre", arabic: "غرفة", gender: "F", category: "مؤنث" },
-            { french: "École", arabic: "مدرسة", gender: "F", category: "مؤنث" },
-            { french: "Règle", arabic: "قاعدة / مسطرة", gender: "F", category: "مؤنث" },
-            { french: "Grammaire", arabic: "قواعد اللغة", gender: "F", category: "مؤنث" },
-            { french: "Lettre", arabic: "رسالة / حرف", gender: "F", category: "مؤنث" },
-            { french: "Aide", arabic: "مساعدة", gender: "F", category: "مؤنث" },
-            { french: "Mer", arabic: "بحر", gender: "F", category: "مؤنث" },
-            { french: "Place", arabic: "مكان / ساحة", gender: "F", category: "مؤنث" },
-            { french: "Opinion", arabic: "رأي", gender: "F", category: "مؤنث" },
-            { french: "Rue", arabic: "شارع", gender: "F", category: "مؤنث" },
-            { french: "Route", arabic: "طريق", gender: "F", category: "مؤنث" },
-            { french: "Voisine", arabic: "جارة", gender: "F", category: "مؤنث" },
-            { french: "Cousine", arabic: "ابنة عم/خال", gender: "F", category: "مؤنث" },
-            { french: "Région", arabic: "منطقة", gender: "F", category: "مؤنث" },
-            { french: "Robe", arabic: "فستان", gender: "F", category: "مؤنث" },
-            { french: "Nuit", arabic: "ليلة", gender: "F", category: "مؤنث" },
-            { french: "Pluie", arabic: "مطر", gender: "F", category: "مؤنث" },
-            { french: "Planète", arabic: "كوكب", gender: "F", category: "مؤنث" },
-            { french: "Chose", arabic: "شيء", gender: "F", category: "مؤنث" },
-            { french: "Cause", arabic: "سبب", gender: "F", category: "مؤنث" },
-            { french: "Photo", arabic: "صورة", gender: "F", category: "مؤنث" },
-            { french: "Moto", arabic: "دراجة نارية", gender: "F", category: "مؤنث" },
-            { french: "Radio", arabic: "راديو", gender: "F", category: "مؤنث" },
-            { french: "Fin", arabic: "نهاية", gender: "F", category: "مؤنث" },
-            { french: "Cour", arabic: "باحة", gender: "F", category: "مؤنث" },
-            { french: "Couleur", arabic: "لون", gender: "F", category: "مؤنث" },
-            { french: "Leçon", arabic: "درس", gender: "F", category: "مؤنث" },
-            { french: "Erreur", arabic: "خطأ", gender: "F", category: "مؤنث" },
-            { french: "Peau", arabic: "جلد", gender: "F", category: "استثناء مؤنث" },
-
-            // كلمات القواعد والنهايات المؤنثة واستثناءاتها المذكرة
-            { french: "Action", arabic: "حدث / عمل", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Cigarette", arabic: "سيجارة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Fille", arabic: "فتاة / ابنة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Classe", arabic: "صف", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Personne", arabic: "شخص", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Année", arabic: "سنة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Chanteuse", arabic: "مغنية", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Matière", arabic: "مادة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Chemise", arabic: "قميص", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Maison", arabic: "منزل", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Activité", arabic: "نشاط", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Télévision", arabic: "تلفاز", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Réflexion", arabic: "تفكير / تفكر", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Habitude", arabic: "عادة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Étude", arabic: "دراسة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Limonade", arabic: "ليموناضة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Élégance", arabic: "أناقة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Patience", arabic: "صبر", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Voiture", arabic: "سيارة", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Mesure", arabic: "قياس", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Boulangerie", arabic: "مخبز", gender: "F", category: "نهاية مؤنثة" },
-            { french: "Actrice", arabic: "ممثلة", gender: "F", category: "نهاية مؤنثة" },
-
-            // استثناءات مذكر لنهايات تدل ع المؤنث (مهمة جداً في الامتحانات)
-            { french: "L'été", arabic: "الصيف", gender: "M", category: "استثناء مذكر" },
-            { french: "Côté", arabic: "جانب", gender: "M", category: "استثناء مذكر" },
-            { french: "Comité", arabic: "لجنة", gender: "M", category: "استثناء مذكر" },
-            { french: "Pamplemousse", arabic: "جريبت فروت", gender: "M", category: "استثناء مذكر" },
-            { french: "Stade", arabic: "ملعب / استاد", gender: "M", category: "استثناء مذكر" },
-            { french: "Lycée", arabic: "مدرسة ثانوية", gender: "M", category: "استثناء مذكر" },
-            { french: "Musée", arabic: "متحف", gender: "M", category: "استثناء مذكر" },
-            { french: "Silence", arabic: "صمت", gender: "M", category: "استثناء مذكر" },
-            { french: "Père", arabic: "أب", gender: "M", category: "استثناء مذكر" },
-            { french: "Frère", arabic: "أخ", gender: "M", category: "استثناء مذكر" },
-            { french: "Ministère", arabic: "وزارة", gender: "M", category: "استثناء مذكر" },
-            { french: "Mystère", arabic: "سر / غموض", gender: "M", category: "استثناء مذكر" },
-            { french: "Génie", arabic: "عبقرية / جني", gender: "M", category: "استثناء مذكر" },
-            { french: "Incendie", arabic: "حريق", gender: "M", category: "استثناء مذكر" },
-            { french: "Parapluie", arabic: "مظلة", gender: "M", category: "استثناء مذكر" }
+            { french: "Thé", arabic: "شاي", gender: "M" },
+            { french: "Café", arabic: "قهوة", gender: "M" },
+            { french: "Jus", arabic: "عصير", gender: "M" },
+            { french: "Lait", arabic: "حليب", gender: "M" },
+            { french: "Problème", arabic: "مشكلة", gender: "M" },
+            { french: "Sucre", arabic: "سكر", gender: "M" },
+            { french: "Livre", arabic: "كتاب", gender: "M" },
+            { french: "Cahier", arabic: "دفتر", gender: "M" },
+            { french: "Stylo", arabic: "قلم حبر", gender: "M" },
+            { french: "Exercice", arabic: "تمرين", gender: "M" },
+            { french: "Texte", arabic: "نص", gender: "M" },
+            { french: "Séminaire", arabic: "ندوة", gender: "M" },
+            { french: "Outil", arabic: "أداة", gender: "M" },
+            { french: "Copain", arabic: "صديق", gender: "M" },
+            { french: "Ami", arabic: "صديق", gender: "M" },
+            { french: "Monde", arabic: "عالم", gender: "M" },
+            { french: "Travail", arabic: "عمل", gender: "M" },
+            { french: "Emploi", arabic: "موقع / عمل", gender: "M" },
+            { french: "Site", arabic: "موقع", gender: "M" },
+            { french: "Arbre", arabic: "شجرة", gender: "M" },
+            { french: "Essai", arabic: "تجربة / مقال", gender: "M" },
+            { french: "Roman", arabic: "رواية", gender: "M" },
+            { french: "Siècle", arabic: "قرن", gender: "M" },
+            { french: "Concert", arabic: "حفلة موسيقية", gender: "M" },
+            { french: "Résultat", arabic: "نتيجة", gender: "M" },
+            { french: "Endroit", arabic: "مكان", gender: "M" },
+            { french: "Lieu", arabic: "مكان", gender: "M" },
+            { french: "Accident", arabic: "حادث", gender: "M" },
+            { french: "Bruit", arabic: "ضجة / صوت", gender: "M" },
+            { french: "Jour", arabic: "يوم", gender: "M" },
+            { french: "L'eau", arabic: "الماء", gender: "F" },
+            { french: "Document", arabic: "وثيقة", gender: "M" },
+            { french: "Page", arabic: "صفحة", gender: "F" },
+            { french: "Plage", arabic: "شاطئ", gender: "F" },
+            { french: "Cage", arabic: "قفس", gender: "F" },
+            { french: "Nage", arabic: "سباحة", gender: "F" },
+            { french: "Rage", arabic: "غضب", gender: "F" },
+            { french: "Image", arabic: "صورة", gender: "F" },
+            { french: "Pays", arabic: "بلد", gender: "M" },
+            { french: "Fils", arabic: "ابن", gender: "M" },
+            { french: "Héros", arabic: "بطل", gender: "M" },
+            { french: "Temps", arabic: "وقت / طقس", gender: "M" },
+            { french: "Succès", arabic: "نجاح", gender: "M" },
+            { french: "Palais", arabic: "قصر", gender: "M" },
+            { french: "Discours", arabic: "خطاب", gender: "M" },
+            { french: "Mois", arabic: "شهر", gender: "M" },
+            { french: "Corps", arabic: "جسم", gender: "M" },
+            { french: "Cours", arabic: "درس / حصة", gender: "M" },
+            { french: "Bus", arabic: "حافلة", gender: "M" },
+            { french: "Repas", arabic: "وجبة", gender: "M" },
+            { french: "Avis", arabic: "رأي", gender: "M" },
+            { french: "Prix", arabic: "سعر / جائزة", gender: "M" },
+            { french: "Fois", arabic: "مرة", gender: "F" },
+            { french: "Vacances", arabic: "عطلة", gender: "F" },
+            { french: "Paix", arabic: "سلام", gender: "F" },
+            { french: "Voix", arabic: "صوت", gender: "F" },
+            { french: "Mère", arabic: "أم", gender: "F" },
+            { french: "Sœur", arabic: "أخت", gender: "F" },
+            { french: "Femme", arabic: "امرأة / زوجة", gender: "F" },
+            { french: "Tante", arabic: "عمة / خالة", gender: "F" },
+            { french: "Fleur", arabic: "زهرة", gender: "F" },
+            { french: "Remarque", arabic: "ملاحظة", gender: "F" },
+            { french: "Lampe", arabic: "مصباح", gender: "F" },
+            { french: "Herbe", arabic: "عشب", gender: "F" },
+            { french: "Histoire", arabic: "تاريخ / قصة", gender: "F" },
+            { french: "Revue", arabic: "مجلة", gender: "F" },
+            { french: "Œuvre", arabic: "عمل فني", gender: "F" },
+            { french: "Amie", arabic: "صديقة", gender: "F" },
+            { french: "Copine", arabic: "صديقة", gender: "F" },
+            { french: "Vie", arabic: "حياة", gender: "F" },
+            { french: "Semaine", arabic: "أسبوع", gender: "F" },
+            { french: "Période", arabic: "فترة", gender: "F" },
+            { french: "Porte", arabic: "باب", gender: "F" },
+            { french: "Fenêtre", arabic: "نافذة", gender: "F" },
+            { french: "Chambre", arabic: "غرفة", gender: "F" },
+            { french: "École", arabic: "مدرسة", gender: "F" },
+            { french: "Règle", arabic: "قاعدة / مسطرة", gender: "F" },
+            { french: "Grammaire", arabic: "قواعد اللغة", gender: "F" },
+            { french: "Lettre", arabic: "رسالة / حرف", gender: "F" },
+            { french: "Aide", arabic: "مساعدة", gender: "F" },
+            { french: "Mer", arabic: "بحر", gender: "F" },
+            { french: "Place", arabic: "مكان / ساحة", gender: "F" },
+            { french: "Opinion", arabic: "رأي", gender: "F" },
+            { french: "Rue", arabic: "شارع", gender: "F" },
+            { french: "Route", arabic: "طريق", gender: "F" },
+            { french: "Voisine", arabic: "جارة", gender: "F" },
+            { french: "Cousine", arabic: "ابنة عم/خال", gender: "F" },
+            { french: "Région", arabic: "منطقة", gender: "F" },
+            { french: "Robe", arabic: "فستان", gender: "F" },
+            { french: "Nuit", arabic: "ليلة", gender: "F" },
+            { french: "Pluie", arabic: "مطر", gender: "F" },
+            { french: "Planète", arabic: "كوكب", gender: "F" },
+            { french: "Chose", arabic: "شيء", gender: "F" },
+            { french: "Cause", arabic: "سبب", gender: "F" },
+            { french: "Photo", arabic: "صورة", gender: "F" },
+            { french: "Moto", arabic: "دراجة نارية", gender: "F" },
+            { french: "Radio", arabic: "راديو", gender: "F" },
+            { french: "Fin", arabic: "نهاية", gender: "F" },
+            { french: "Cour", arabic: "باحة", gender: "F" },
+            { french: "Couleur", arabic: "لون", gender: "F" },
+            { french: "Leçon", arabic: "درس", gender: "F" },
+            { french: "Erreur", arabic: "خطأ", gender: "F" },
+            { french: "Peau", arabic: "جلد", gender: "F" },
+            { french: "Action", arabic: "حدث / عمل", gender: "F" },
+            { french: "Cigarette", arabic: "سيجارة", gender: "F" },
+            { french: "Fille", arabic: "فتاة / ابنة", gender: "F" },
+            { french: "Classe", arabic: "صف", gender: "F" },
+            { french: "Personne", arabic: "شخص", gender: "F" },
+            { french: "Année", arabic: "سنة", gender: "F" },
+            { french: "Chanteuse", arabic: "مغنية", gender: "F" },
+            { french: "Matière", arabic: "مادة", gender: "F" },
+            { french: "Chemise", arabic: "قميص", gender: "F" },
+            { french: "Maison", arabic: "منزل", gender: "F" },
+            { french: "Activité", arabic: "نشاط", gender: "F" },
+            { french: "Télévision", arabic: "تلفاز", gender: "F" },
+            { french: "Réflexion", arabic: "تفكير / تفكر", gender: "F" },
+            { french: "Habitude", arabic: "عادة", gender: "F" },
+            { french: "Étude", arabic: "دراسة", gender: "F" },
+            { french: "Limonade", arabic: "ليموناضة", gender: "F" },
+            { french: "Élégance", arabic: "أناقة", gender: "F" },
+            { french: "Patience", arabic: "صبر", gender: "F" },
+            { french: "Voiture", arabic: "سيارة", gender: "F" },
+            { french: "Mesure", arabic: "قياس", gender: "F" },
+            { french: "Boulangerie", arabic: "مخبز", gender: "F" },
+            { french: "Actrice", arabic: "ممثلة", gender: "F" },
+            { french: "L'été", arabic: "الصيف", gender: "M" },
+            { french: "Côté", arabic: "جانب", gender: "M" },
+            { french: "Comité", arabic: "لجنة", gender: "M" },
+            { french: "Pamplemousse", arabic: "جريبت فروت", gender: "M" },
+            { french: "Stade", arabic: "ملعب / استاد", gender: "M" },
+            { french: "Lycée", arabic: "مدرسة ثانوية", gender: "M" },
+            { french: "Musée", arabic: "متحف", gender: "M" },
+            { french: "Silence", arabic: "صمت", gender: "M" },
+            { french: "Père", arabic: "أب", gender: "M" },
+            { french: "Frère", arabic: "أخ", gender: "M" },
+            { french: "Ministère", arabic: "وزارة", gender: "M" },
+            { french: "Mystère", arabic: "سر / غموض", gender: "M" },
+            { french: "Génie", arabic: "عبقرية / جني", gender: "M" },
+            { french: "Incendie", arabic: "حريق", gender: "M" },
+            { french: "Parapluie", arabic: "مظلة", gender: "M" }
         ];
 
         /* State Control */
@@ -728,9 +704,19 @@
         let myChartInstance = null;
 
         /* Web Audio API */
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
         function playSound(type) {
             if (!soundEnabled) return;
+            initAudio();
             try {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -762,7 +748,6 @@
         const resultCard = document.getElementById('resultCard');
         const frenchWordEl = document.getElementById('frenchWord');
         const arabicMeaningEl = document.getElementById('arabicMeaning');
-        const categoryBadgeEl = document.getElementById('categoryBadge');
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         const scoreText = document.getElementById('scoreText');
@@ -814,7 +799,6 @@
 
             frenchWordEl.textContent = currentItem.french;
             arabicMeaningEl.textContent = currentItem.arabic;
-            categoryBadgeEl.textContent = currentItem.category || "كلمة";
 
             const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
             progressBar.style.width = `${progressPercent}%`;
@@ -854,7 +838,7 @@
                 } else {
                     showFinalResults();
                 }
-            }, 1100);
+            }, 1000);
         }
 
         function updateScoreDisplay() {
@@ -926,7 +910,7 @@
         openSettingsBtn.onclick = () => settingsModal.classList.add('active');
         closeSettingsBtn.onclick = () => settingsModal.classList.remove('active');
 
-        /* Toggle Interaction Switch Logic */
+        /* Toggle Switch Logic */
         allWordsToggle.onchange = function() {
             questionCountInput.disabled = this.checked;
         };
