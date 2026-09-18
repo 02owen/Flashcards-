@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق تدريب الكلمات الفرنسية | Vocabulary Master</title>
-    <!-- Google Fonts: Tajawal -->
+    <title>اختبار الجنس في اللغة الفرنسية | Féminin ou Masculin</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN for Interactive Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #4F46E5;
@@ -14,6 +16,8 @@
             --card-bg: #FFFFFF;
             --text-main: #1F2937;
             --text-muted: #6B7280;
+            --masculine-color: #2563EB; /* Blue for Masculin */
+            --feminine-color: #EC4899;  /* Pink for Féminin */
             --success: #10B981;
             --danger: #EF4444;
             --border-radius: 16px;
@@ -41,10 +45,9 @@
             overflow-x: hidden;
         }
 
-        /* Container & Cards */
         .app-container {
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             position: relative;
         }
 
@@ -124,7 +127,7 @@
             transition: width 0.4s ease;
         }
 
-        /* Quiz Body */
+        /* Quiz Card Styling */
         .word-badge {
             display: inline-block;
             background-color: #EEF2FF;
@@ -133,86 +136,168 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .word-display {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             text-align: center;
-            margin: 15px 0 25px 0;
+            margin: 10px 0 5px 0;
             color: var(--text-main);
             direction: ltr;
-            letter-spacing: 0.5px;
         }
 
-        .options-grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .option-btn {
-            background-color: #F9FAFB;
-            border: 2px solid #E5E7EB;
-            border-radius: 12px;
-            padding: 16px;
+        .word-meaning {
+            text-align: center;
+            color: var(--text-muted);
             font-size: 1.05rem;
+            margin-bottom: 30px;
             font-weight: 500;
-            color: var(--text-main);
+        }
+
+        /* Gender Selection Buttons */
+        .gender-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            direction: ltr;
+        }
+
+        .gender-btn {
+            border: 2px solid #E5E7EB;
+            background-color: #F9FAFB;
+            border-radius: 14px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: var(--transition);
-            text-align: center;
-            width: 100%;
         }
 
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--primary);
-            background-color: #EEF2FF;
+        .gender-btn .title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
-        .option-btn.correct {
+        .gender-btn .sub {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .gender-btn.masculin-btn {
+            color: var(--masculine-color);
+        }
+
+        .gender-btn.masculin-btn:hover:not(:disabled) {
+            border-color: var(--masculine-color);
+            background-color: #EFF6FF;
+        }
+
+        .gender-btn.feminin-btn {
+            color: var(--feminine-color);
+        }
+
+        .gender-btn.feminin-btn:hover:not(:disabled) {
+            border-color: var(--feminine-color);
+            background-color: #FDF2F8;
+        }
+
+        .gender-btn.correct {
             background-color: #D1FAE5 !important;
             border-color: var(--success) !important;
             color: #065F46 !important;
-            font-weight: 700;
         }
 
-        .option-btn.wrong {
+        .gender-btn.wrong {
             background-color: #FEE2E2 !important;
             border-color: var(--danger) !important;
             color: #991B1B !important;
             animation: shake 0.4s ease;
         }
 
-        /* Result Screen */
+        /* Advanced Results Screen */
         .result-screen {
-            text-align: center;
             display: none;
+            text-align: center;
         }
 
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #818CF8);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .chart-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
             margin: 20px auto;
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
 
-        .score-circle .number {
-            font-size: 2.2rem;
+        .chart-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
             font-weight: 800;
-            line-height: 1;
+            color: var(--text-main);
         }
 
-        .score-circle .label {
-            font-size: 0.8rem;
-            opacity: 0.9;
+        .errors-container {
+            margin-top: 25px;
+            text-align: right;
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 15px;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid #E5E7EB;
+        }
+
+        .errors-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-right: 4px solid var(--danger);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .error-item:last-child { margin-bottom: 0; }
+
+        .error-word {
+            direction: ltr;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .correct-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .tag-masculin { background: #DBEAFE; color: var(--masculine-color); }
+        .tag-feminin { background: #FCE7F3; color: var(--feminine-color); }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .btn-primary {
@@ -220,28 +305,36 @@
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 14px 28px;
+            padding: 14px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
+            flex: 1;
             transition: var(--transition);
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-secondary {
+            background-color: #E5E7EB;
+            color: var(--text-main);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            transition: var(--transition);
         }
 
-        /* Settings Drawer/Modal */
+        .btn-secondary:hover { background-color: #D1D5DB; }
+
+        /* Settings Modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
             display: flex;
@@ -269,9 +362,7 @@
             transition: var(--transition);
         }
 
-        .modal-overlay.active .modal-card {
-            transform: translateY(0);
-        }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
 
         .modal-header {
             display: flex;
@@ -289,10 +380,7 @@
             align-items: center;
         }
 
-        .setting-item label {
-            font-weight: 500;
-            color: var(--text-main);
-        }
+        .setting-item label { font-weight: 500; }
 
         .setting-item input[type="number"] {
             width: 70px;
@@ -303,7 +391,7 @@
             font-size: 1rem;
         }
 
-        /* Toggle Switch */
+        /* Switch */
         .switch {
             position: relative;
             display: inline-block;
@@ -325,10 +413,8 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
             background-color: white;
             transition: .3s;
             border-radius: 50%;
@@ -337,17 +423,15 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* Animations */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
         }
 
-        /* Responsive UI */
         @media (max-width: 480px) {
             .card { padding: 20px; }
-            .word-display { font-size: 1.8rem; }
+            .word-display { font-size: 2rem; }
         }
     </style>
 </head>
@@ -358,14 +442,14 @@
         <div class="header-actions">
             <div class="app-title">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <span>مُتقن الفرنسية</span>
+                <span>تحديد الجنس | Genre Français</span>
             </div>
             <button class="icon-btn" id="openSettingsBtn" title="الإعدادات">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
         </div>
 
-        <!-- Main Quiz Card -->
+        <!-- Quiz Card -->
         <div class="card" id="quizCard">
             <div class="progress-container">
                 <div class="progress-stats">
@@ -378,28 +462,51 @@
             </div>
 
             <div style="text-align: center;">
-                <span class="word-badge" id="categoryBadge">مفردات عامة</span>
-                <div class="word-display" id="frenchWord">Bonjour</div>
+                <span class="word-badge" id="categoryBadge">أسماء</span>
+                <div class="word-display" id="frenchWord">Maison</div>
+                <div class="word-meaning" id="arabicMeaning">المنزل</div>
             </div>
 
-            <div class="options-grid" id="optionsContainer">
-                <!-- Options injected by JS -->
+            <!-- Gender Buttons (Un vs Une) -->
+            <div class="gender-grid">
+                <button class="gender-btn masculin-btn" id="btnMasculin">
+                    <span class="title">Masculin</span>
+                    <span class="sub">Un / Le</span>
+                </button>
+                <button class="gender-btn feminin-btn" id="btnFeminin">
+                    <span class="title">Féminin</span>
+                    <span class="sub">Une / La</span>
+                </button>
             </div>
         </div>
 
-        <!-- Result Screen -->
+        <!-- Advanced Result Card -->
         <div class="card result-screen" id="resultCard">
-            <h2>أحسنت! أكملت الاختبار 🎉</h2>
-            <p style="color: var(--text-muted); margin-top: 6px;">إليك ملخص أدائك في الاختبار</p>
+            <h2>نتيجة الاختبار 📊</h2>
+            <p style="color: var(--text-muted); margin-top: 4px;">إليك تحليلاً شاملاً لأدائك</p>
 
-            <div class="score-circle">
-                <span class="number" id="percentageResult">0%</span>
-                <span class="label">النتيجة النهائية</span>
+            <!-- Donut Chart -->
+            <div class="chart-wrapper">
+                <canvas id="scoreChart"></canvas>
+                <div class="chart-center-text" id="chartPercentage">0%</div>
             </div>
 
-            <p id="finalScoreDetails" style="font-weight: 500; font-size: 1.1rem; margin-bottom: 10px;"></p>
+            <!-- Error Review Section -->
+            <div class="errors-container" id="errorsContainer">
+                <div class="errors-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span>الكلمات التي تحتاج إلى مراجعة:</span>
+                </div>
+                <div id="errorsList">
+                    <!-- Error items injected by JS -->
+                </div>
+            </div>
 
-            <button class="btn-primary" id="restartBtn">إعادة الاختبار الآن</button>
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button class="btn-primary" id="restartBtn">إعادة الاختبار</button>
+                <button class="btn-secondary" id="retryErrorsBtn" style="display: none;">التركيز على الأخطاء</button>
+            </div>
         </div>
     </div>
 
@@ -412,7 +519,7 @@
             </div>
             
             <div class="setting-item">
-                <label for="questionCountInput">عدد الأسئلة:</label>
+                <label for="questionCountInput">عدد الكلمات:</label>
                 <input type="number" id="questionCountInput" min="3" max="50" value="10">
             </div>
 
@@ -430,32 +537,36 @@
 
     <script>
         /* ==========================================================================
-           1. DATABASE OF WORDS (مصفوفة الكلمات - جاهزة للتوسيع ببيانات الصور لاحقاً)
+           1. GENDER DATABASE (مصفوفة الكلمات وجنسها - جاهزة لاستقبال الكلمات الجديدة)
+           gender: 'M' for Masculin, 'F' for Féminin
            ========================================================================== */
         const wordsDatabase = [
-            { french: "Bonjour", arabic: "مرحباً / صباح الخير", type: "تحية" },
-            { french: "Merci", arabic: "شكراً", type: "مفردات عامة" },
-            { french: "S'il vous plaît", arabic: "من فضلك", type: "تعبير" },
-            { french: "L'école", arabic: "المدرسة", type: "أسماء" },
-            { french: "Manger", arabic: "يأكل", type: "أفعال" },
-            { french: "Toujours", arabic: "دائماً", type: "ظروف" },
-            { french: "La maison", arabic: "المنزل", type: "أسماء" },
-            { french: "Comprendre", arabic: "يفهم", type: "أفعال" },
-            { french: "Magnifique", arabic: "رائع / بديع", type: "صفات" },
-            { french: "Aujourd'hui", arabic: "اليوم", type: "زمن" }
+            { french: "Maison", arabic: "منزل", gender: "F", category: "أسماء" },
+            { french: "Soleil", arabic: "شمس", gender: "M", category: "طبيعة" },
+            { french: "Voiture", arabic: "سيارة", gender: "F", category: "وسائل نقل" },
+            { french: "Livre", arabic: "كتاب", gender: "M", category: "أدوات" },
+            { french: "Table", arabic: "طاولة", gender: "F", category: "أثاث" },
+            { french: "Arbre", arabic: "شجرة", gender: "M", category: "طبيعة" },
+            { french: "Pomme", arabic: "تفاحة", gender: "F", category: "طعام" },
+            { french: "Stylo", arabic: "قلم", gender: "M", category: "أدوات" },
+            { french: "Fleur", arabic: "زهرة", gender: "F", category: "طبيعة" },
+            { french: "Ordinateur", arabic: "حاسوب", gender: "M", category: "تكنولوجيا" }
         ];
 
         /* ==========================================================================
-           2. STATE MANAGEMENT & VARS
+           2. STATE VARIABLES
            ========================================================================== */
+        let activePool = [];
         let currentQuestions = [];
         let currentIndex = 0;
         let score = 0;
         let maxQuestions = 10;
         let soundEnabled = true;
         let isAnsweringBlocked = false;
+        let wrongWordsList = [];
+        let myChartInstance = null;
 
-        // Web Audio API Sound Effects
+        // Audio Effects via Web Audio API
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (!soundEnabled) return;
@@ -466,8 +577,8 @@
 
             if (type === 'correct') {
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start();
@@ -489,33 +600,41 @@
         const quizCard = document.getElementById('quizCard');
         const resultCard = document.getElementById('resultCard');
         const frenchWordEl = document.getElementById('frenchWord');
+        const arabicMeaningEl = document.getElementById('arabicMeaning');
         const categoryBadgeEl = document.getElementById('categoryBadge');
-        const optionsContainer = document.getElementById('optionsContainer');
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         const scoreText = document.getElementById('scoreText');
-        const percentageResult = document.getElementById('percentageResult');
-        const finalScoreDetails = document.getElementById('finalScoreDetails');
+        
+        const btnMasculin = document.getElementById('btnMasculin');
+        const btnFeminin = document.getElementById('btnFeminin');
 
-        // Modal Elements
+        // Settings Modal Elements
         const settingsModal = document.getElementById('settingsModal');
         const openSettingsBtn = document.getElementById('openSettingsBtn');
         const closeSettingsBtn = document.getElementById('closeSettingsBtn');
         const saveSettingsBtn = document.getElementById('saveSettingsBtn');
         const questionCountInput = document.getElementById('questionCountInput');
         const soundToggle = document.getElementById('soundToggle');
+
+        // Result Elements
+        const errorsContainer = document.getElementById('errorsContainer');
+        const errorsList = document.getElementById('errorsList');
+        const chartPercentage = document.getElementById('chartPercentage');
         const restartBtn = document.getElementById('restartBtn');
+        const retryErrorsBtn = document.getElementById('retryErrorsBtn');
 
         /* ==========================================================================
-           4. QUIZ LOGIC
+           4. QUIZ ENGINE
            ========================================================================== */
-        function startQuiz() {
-            // Shuffle database & pick subset
-            const shuffled = [...wordsDatabase].sort(() => 0.5 - Math.random());
-            currentQuestions = shuffled.slice(0, Math.min(maxQuestions, wordsDatabase.length));
+        function startQuiz(customPool = null) {
+            activePool = customPool || wordsDatabase;
+            const shuffled = [...activePool].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, Math.min(maxQuestions, activePool.length));
             
             currentIndex = 0;
             score = 0;
+            wrongWordsList = [];
             isAnsweringBlocked = false;
 
             resultCard.style.display = 'none';
@@ -527,50 +646,33 @@
 
         function loadQuestion() {
             isAnsweringBlocked = false;
+            resetGenderButtons();
+
             const currentItem = currentQuestions[currentIndex];
 
-            // UI updates
             frenchWordEl.textContent = currentItem.french;
-            categoryBadgeEl.textContent = currentItem.type || "مفردات";
-            
-            // Progress Bar
+            arabicMeaningEl.textContent = currentItem.arabic;
+            categoryBadgeEl.textContent = currentItem.category || "كلمة";
+
+            // Progress bar update
             const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
             progressBar.style.width = `${progressPercent}%`;
             progressText.textContent = `السؤال ${currentIndex + 1} من ${currentQuestions.length}`;
-
-            // Generate options (1 correct + 3 wrong)
-            optionsContainer.innerHTML = '';
-            const options = generateOptions(currentItem.arabic);
-
-            options.forEach(optionText => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = optionText;
-                btn.onclick = () => handleAnswer(optionText, currentItem.arabic, btn);
-                optionsContainer.appendChild(btn);
-            });
         }
 
-        function generateOptions(correctAnswer) {
-            const options = [correctAnswer];
-            const allArabicMeanings = wordsDatabase.map(w => w.arabic).filter(a => a !== correctAnswer);
-            const shuffledMeanings = allArabicMeanings.sort(() => 0.5 - Math.random());
-
-            // Get up to 3 distractor choices
-            for (let i = 0; i < Math.min(3, shuffledMeanings.length); i++) {
-                options.push(shuffledMeanings[i]);
-            }
-
-            return options.sort(() => 0.5 - Math.random());
+        function resetGenderButtons() {
+            btnMasculin.className = 'gender-btn masculin-btn';
+            btnFeminin.className = 'gender-btn feminin-btn';
         }
 
-        function handleAnswer(selectedAnswer, correctAnswer, btnElement) {
+        function handleAnswer(selectedGender, btnElement) {
             if (isAnsweringBlocked) return;
             isAnsweringBlocked = true;
 
-            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+            const currentItem = currentQuestions[currentIndex];
+            const isCorrect = selectedGender === currentItem.gender;
 
-            if (selectedAnswer === correctAnswer) {
+            if (isCorrect) {
                 btnElement.classList.add('correct');
                 playSound('correct');
                 score++;
@@ -578,40 +680,101 @@
             } else {
                 btnElement.classList.add('wrong');
                 playSound('wrong');
-                // Highlight correct one
-                allButtons.forEach(b => {
-                    if (b.textContent === correctAnswer) b.classList.add('correct');
-                });
+                
+                // Track mistake
+                wrongWordsList.push(currentItem);
+
+                // Highlight correct choice
+                if (currentItem.gender === 'M') btnMasculin.classList.add('correct');
+                else btnFeminin.classList.add('correct');
             }
 
-            // Next question delay
             setTimeout(() => {
                 currentIndex++;
                 if (currentIndex < currentQuestions.length) {
                     loadQuestion();
                 } else {
-                    showFinalResult();
+                    showFinalResults();
                 }
-            }, 1200);
+            }, 1100);
         }
 
         function updateScoreDisplay() {
             scoreText.textContent = `النقاط: ${score}`;
         }
 
-        function showFinalResult() {
+        /* ==========================================================================
+           5. ADVANCED RESULTS & CHART
+           ========================================================================== */
+        function showFinalResults() {
             quizCard.style.display = 'none';
             resultCard.style.display = 'block';
 
-            const percentage = Math.round((score / currentQuestions.length) * 100);
-            percentageResult.textContent = `${percentage}%`;
-            finalScoreDetails.textContent = `أجبت بشكل صحيح على ${score} من أصل ${currentQuestions.length} سؤال.`;
-            progressBar.style.width = `100%`;
+            const total = currentQuestions.length;
+            const percentage = Math.round((score / total) * 100);
+            chartPercentage.textContent = `${percentage}%`;
+
+            // 1. Render Chart.js Donut Chart
+            renderChart(score, total - score);
+
+            // 2. Render Mistakes Review
+            errorsList.innerHTML = '';
+            if (wrongWordsList.length > 0) {
+                errorsContainer.style.display = 'block';
+                retryErrorsBtn.style.display = 'inline-block';
+
+                wrongWordsList.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'error-item';
+                    const tagClass = item.gender === 'M' ? 'tag-masculin' : 'tag-feminin';
+                    const tagText = item.gender === 'M' ? 'Masculin (Un)' : 'Féminin (Une)';
+
+                    div.innerHTML = `
+                        <span class="error-word">${item.french} <small style="color:var(--text-muted); font-weight:normal;">(${item.arabic})</small></span>
+                        <span class="correct-tag ${tagClass}">${tagText}</span>
+                    `;
+                    errorsList.appendChild(div);
+                });
+            } else {
+                errorsContainer.style.display = 'none';
+                retryErrorsBtn.style.display = 'none';
+            }
+        }
+
+        function renderChart(correctCount, wrongCount) {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            
+            if (myChartInstance) myChartInstance.destroy();
+
+            myChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['إجابات صحيحة', 'إجابات خاطئة'],
+                    datasets: [{
+                        data: [correctCount, wrongCount],
+                        backgroundColor: ['#10B981', '#EF4444'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '78%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
         }
 
         /* ==========================================================================
-           5. SETTINGS & MODAL CONTROLS
+           6. EVENT LISTENERS
            ========================================================================== */
+        btnMasculin.onclick = () => handleAnswer('M', btnMasculin);
+        btnFeminin.onclick = () => handleAnswer('F', btnFeminin);
+
         openSettingsBtn.onclick = () => settingsModal.classList.add('active');
         closeSettingsBtn.onclick = () => settingsModal.classList.remove('active');
 
@@ -624,10 +787,11 @@
             startQuiz();
         };
 
-        restartBtn.onclick = startQuiz;
+        restartBtn.onclick = () => startQuiz();
+        retryErrorsBtn.onclick = () => startQuiz(wrongWordsList);
 
-        // Initialize App on Load
-        window.onload = startQuiz;
+        // Run on load
+        window.onload = () => startQuiz();
     </script>
 </body>
 </html>
