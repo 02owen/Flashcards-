@@ -16,8 +16,8 @@
             --card-bg: #FFFFFF;
             --text-main: #1F2937;
             --text-muted: #6B7280;
-            --masculine-color: #2563EB; /* Blue for Masculin */
-            --feminine-color: #EC4899;  /* Pink for Féminin */
+            --masculine-color: #2563EB;
+            --feminine-color: #EC4899;
             --success: #10B981;
             --danger: #EF4444;
             --border-radius: 16px;
@@ -127,7 +127,7 @@
             transition: width 0.4s ease;
         }
 
-        /* Quiz Card Styling */
+        /* Quiz Display */
         .word-badge {
             display: inline-block;
             background-color: #EEF2FF;
@@ -156,7 +156,7 @@
             font-weight: 500;
         }
 
-        /* Gender Selection Buttons */
+        /* Buttons Grid */
         .gender-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -189,19 +189,13 @@
             opacity: 0.8;
         }
 
-        .gender-btn.masculin-btn {
-            color: var(--masculine-color);
-        }
-
+        .gender-btn.masculin-btn { color: var(--masculine-color); }
         .gender-btn.masculin-btn:hover:not(:disabled) {
             border-color: var(--masculine-color);
             background-color: #EFF6FF;
         }
 
-        .gender-btn.feminin-btn {
-            color: var(--feminine-color);
-        }
-
+        .gender-btn.feminin-btn { color: var(--feminine-color); }
         .gender-btn.feminin-btn:hover:not(:disabled) {
             border-color: var(--feminine-color);
             background-color: #FDF2F8;
@@ -220,7 +214,7 @@
             animation: shake 0.4s ease;
         }
 
-        /* Advanced Results Screen */
+        /* Results Screen */
         .result-screen {
             display: none;
             text-align: center;
@@ -331,7 +325,7 @@
 
         .btn-secondary:hover { background-color: #D1D5DB; }
 
-        /* Settings Modal */
+        /* Settings Modal & Unified Toggle Controls */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -380,7 +374,7 @@
             align-items: center;
         }
 
-        .setting-item label { font-weight: 500; }
+        .setting-item label { font-weight: 600; font-size: 0.95rem; }
 
         .setting-item input[type="number"] {
             width: 80px;
@@ -389,20 +383,23 @@
             border: 1px solid #D1D5DB;
             text-align: center;
             font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
         }
 
         .setting-item input[type="number"]:disabled {
             background-color: #F3F4F6;
             color: #9CA3AF;
+            border-color: #E5E7EB;
             cursor: not-allowed;
         }
 
-        /* Switch */
+        /* Toggle Switch UI Component */
         .switch {
             position: relative;
             display: inline-block;
-            width: 46px;
-            height: 24px;
+            width: 48px;
+            height: 26px;
         }
 
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -413,17 +410,18 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: #D1D5DB;
             transition: .3s;
-            border-radius: 24px;
+            border-radius: 26px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px; width: 18px;
+            height: 20px; width: 20px;
             left: 3px; bottom: 3px;
             background-color: white;
             transition: .3s;
             border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         input:checked + .slider { background-color: var(--primary); }
@@ -468,12 +466,12 @@
             </div>
 
             <div style="text-align: center;">
-                <span class="word-badge" id="categoryBadge">أسماء</span>
+                <span class="word-badge" id="categoryBadge">اسم</span>
                 <div class="word-display" id="frenchWord">Maison</div>
                 <div class="word-meaning" id="arabicMeaning">المنزل</div>
             </div>
 
-            <!-- Gender Buttons (Un vs Une) -->
+            <!-- Gender Choice Buttons -->
             <div class="gender-grid">
                 <button class="gender-btn masculin-btn" id="btnMasculin">
                     <span class="title">Masculin</span>
@@ -486,29 +484,24 @@
             </div>
         </div>
 
-        <!-- Advanced Result Card -->
+        <!-- Result Card -->
         <div class="card result-screen" id="resultCard">
             <h2>نتيجة الاختبار 📊</h2>
             <p style="color: var(--text-muted); margin-top: 4px;">إليك تحليلاً شاملاً لأدائك</p>
 
-            <!-- Donut Chart -->
             <div class="chart-wrapper">
                 <canvas id="scoreChart"></canvas>
                 <div class="chart-center-text" id="chartPercentage">0%</div>
             </div>
 
-            <!-- Error Review Section -->
             <div class="errors-container" id="errorsContainer">
                 <div class="errors-title">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     <span>الكلمات التي تحتاج إلى مراجعة:</span>
                 </div>
-                <div id="errorsList">
-                    <!-- Error items injected by JS -->
-                </div>
+                <div id="errorsList"></div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="btn-group">
                 <button class="btn-primary" id="restartBtn">إعادة الاختبار</button>
                 <button class="btn-secondary" id="retryErrorsBtn" style="display: none;">التركيز على الأخطاء</button>
@@ -524,6 +517,7 @@
                 <button class="icon-btn" id="closeSettingsBtn" style="width: 32px; height: 32px; box-shadow: none;">✕</button>
             </div>
             
+            <!-- Option 1: All Words Toggle -->
             <div class="setting-item">
                 <label for="allWordsToggle">كل الكلمات (Tous les mots):</label>
                 <label class="switch">
@@ -532,11 +526,13 @@
                 </label>
             </div>
 
+            <!-- Option 2: Number of Questions Input -->
             <div class="setting-item">
                 <label for="questionCountInput">عدد الكلمات:</label>
                 <input type="number" id="questionCountInput" min="1" max="200" value="10">
             </div>
 
+            <!-- Option 3: Sound FX Toggle -->
             <div class="setting-item">
                 <label for="soundToggle">المؤثرات الصوتية:</label>
                 <label class="switch">
@@ -550,10 +546,7 @@
     </div>
 
     <script>
-        /* ==========================================================================
-           1. GENDER DATABASE (مصفوفة الكلمات النموذجية المؤقتة)
-           gender: 'M' for Masculin, 'F' for Féminin
-           ========================================================================== */
+        /* Database Model */
         const wordsDatabase = [
             { french: "Thé", arabic: "شاي", gender: "M", category: "مذكر" },
             { french: "Café", arabic: "قهوة", gender: "M", category: "مذكر" },
@@ -569,9 +562,7 @@
             { french: "École", arabic: "مدرسة", gender: "F", category: "مؤنث" }
         ];
 
-        /* ==========================================================================
-           2. STATE VARIABLES
-           ========================================================================== */
+        /* State Control */
         let activePool = [];
         let currentQuestions = [];
         let currentIndex = 0;
@@ -583,7 +574,7 @@
         let wrongWordsList = [];
         let myChartInstance = null;
 
-        // Audio Effects via Web Audio API
+        /* Web Audio API */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (!soundEnabled) return;
@@ -610,14 +601,10 @@
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.35);
                 }
-            } catch(e) {
-                console.log("Audio not supported or permitted yet.");
-            }
+            } catch(e) {}
         }
 
-        /* ==========================================================================
-           3. DOM ELEMENTS
-           ========================================================================== */
+        /* Elements */
         const quizCard = document.getElementById('quizCard');
         const resultCard = document.getElementById('resultCard');
         const frenchWordEl = document.getElementById('frenchWord');
@@ -630,7 +617,6 @@
         const btnMasculin = document.getElementById('btnMasculin');
         const btnFeminin = document.getElementById('btnFeminin');
 
-        // Settings Modal Elements
         const settingsModal = document.getElementById('settingsModal');
         const openSettingsBtn = document.getElementById('openSettingsBtn');
         const closeSettingsBtn = document.getElementById('closeSettingsBtn');
@@ -639,23 +625,19 @@
         const allWordsToggle = document.getElementById('allWordsToggle');
         const soundToggle = document.getElementById('soundToggle');
 
-        // Result Elements
         const errorsContainer = document.getElementById('errorsContainer');
         const errorsList = document.getElementById('errorsList');
         const chartPercentage = document.getElementById('chartPercentage');
         const restartBtn = document.getElementById('restartBtn');
         const retryErrorsBtn = document.getElementById('retryErrorsBtn');
 
-        /* ==========================================================================
-           4. QUIZ ENGINE
-           ========================================================================== */
+        /* Engine Logic */
         function startQuiz(customPool = null) {
             activePool = customPool || wordsDatabase;
             const shuffled = [...activePool].sort(() => 0.5 - Math.random());
             
-            // Determine total questions limit
             let countToTake = isAllWordsMode ? activePool.length : Math.min(maxQuestions, activePool.length);
-            if (customPool) countToTake = customPool.length; // If retrying errors
+            if (customPool) countToTake = customPool.length;
 
             currentQuestions = shuffled.slice(0, countToTake);
             
@@ -681,7 +663,6 @@
             arabicMeaningEl.textContent = currentItem.arabic;
             categoryBadgeEl.textContent = currentItem.category || "كلمة";
 
-            // Progress bar update
             const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
             progressBar.style.width = `${progressPercent}%`;
             progressText.textContent = `السؤال ${currentIndex + 1} من ${currentQuestions.length}`;
@@ -707,11 +688,8 @@
             } else {
                 btnElement.classList.add('wrong');
                 playSound('wrong');
-                
-                // Track mistake
                 wrongWordsList.push(currentItem);
 
-                // Highlight correct choice
                 if (currentItem.gender === 'M') btnMasculin.classList.add('correct');
                 else btnFeminin.classList.add('correct');
             }
@@ -730,9 +708,7 @@
             scoreText.textContent = `النقاط: ${score}`;
         }
 
-        /* ==========================================================================
-           5. ADVANCED RESULTS & CHART
-           ========================================================================== */
+        /* Results & Chart Display */
         function showFinalResults() {
             quizCard.style.display = 'none';
             resultCard.style.display = 'block';
@@ -741,10 +717,8 @@
             const percentage = Math.round((score / total) * 100);
             chartPercentage.textContent = `${percentage}%`;
 
-            // Render Chart.js Donut Chart
             renderChart(score, total - score);
 
-            // Render Mistakes Review
             errorsList.innerHTML = '';
             if (wrongWordsList.length > 0) {
                 errorsContainer.style.display = 'block';
@@ -770,7 +744,6 @@
 
         function renderChart(correctCount, wrongCount) {
             const ctx = document.getElementById('scoreChart').getContext('2d');
-            
             if (myChartInstance) myChartInstance.destroy();
 
             myChartInstance = new Chart(ctx, {
@@ -786,26 +759,21 @@
                 },
                 options: {
                     cutout: '78%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { enabled: true } },
                     responsive: true,
                     maintainAspectRatio: false
                 }
             });
         }
 
-        /* ==========================================================================
-           6. EVENT LISTENERS & SETTINGS HANDLERS
-           ========================================================================== */
+        /* Event Handlers */
         btnMasculin.onclick = () => handleAnswer('M', btnMasculin);
         btnFeminin.onclick = () => handleAnswer('F', btnFeminin);
 
         openSettingsBtn.onclick = () => settingsModal.classList.add('active');
         closeSettingsBtn.onclick = () => settingsModal.classList.remove('active');
 
-        // Toggle "Tous les mots" option
+        /* Toggle Interaction Switch Logic */
         allWordsToggle.onchange = function() {
             questionCountInput.disabled = this.checked;
         };
@@ -826,7 +794,6 @@
         restartBtn.onclick = () => startQuiz();
         retryErrorsBtn.onclick = () => startQuiz(wrongWordsList);
 
-        // Run on initial page load
         window.onload = () => startQuiz();
     </script>
 </body>
