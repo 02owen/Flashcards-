@@ -3,755 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار تحديد جنس الأسماء في اللغة الفرنسية</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
-                        },
-                        masculin: '#2563eb',
-                        feminin: '#db2777'
-                    },
-                    fontFamily: {
-                        sans: ['Cairo', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <title>تطبيق تدريب الكلمات الفرنسية | Vocabulary Master</title>
+    <!-- Google Fonts: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --success: #10B981;
+            --danger: #EF4444;
+            --border-radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8fafc;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
-        .french-word {
-            font-family: system-ui, -apple-system, sans-serif;
-            direction: ltr;
+
+        /* Container & Cards */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--card-bg);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            color: var(--text-main);
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: #E5E7EB;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), #818CF8);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        /* Quiz Body */
+        .word-badge {
             display: inline-block;
+            background-color: #EEF2FF;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
-        .flip-card {
-            perspective: 1000px;
+
+        .word-display {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 15px 0 25px 0;
+            color: var(--text-main);
+            direction: ltr;
+            letter-spacing: 0.5px;
         }
-        .flip-card-inner {
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
         }
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
+
+        .option-btn {
+            background-color: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
         }
-        .flip-card-front, .flip-card-back {
-            backface-visibility: hidden;
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #EEF2FF;
         }
-        .flip-card-back {
-            transform: rotateY(180deg);
+
+        .option-btn.correct {
+            background-color: #D1FAE5 !important;
+            border-color: var(--success) !important;
+            color: #065F46 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background-color: #FEE2E2 !important;
+            border-color: var(--danger) !important;
+            color: #991B1B !important;
+            animation: shake 0.4s ease;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .score-circle .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-circle .label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Settings Drawer/Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 10px;
+        }
+
+        .setting-item {
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-item label {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .setting-item input[type="number"] {
+            width: 70px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #D1D5DB;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #D1D5DB;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* Responsive UI */
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .word-display { font-size: 1.8rem; }
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+<body>
 
-    <!-- Navbar / Header -->
-    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-white text-blue-700 w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl shadow-inner">
-                    🇫🇷
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header-actions">
+            <div class="app-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span>مُتقن الفرنسية</span>
+            </div>
+            <button class="icon-btn" id="openSettingsBtn" title="الإعدادات">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+        </div>
+
+        <!-- Main Quiz Card -->
+        <div class="card" id="quizCard">
+            <div class="progress-container">
+                <div class="progress-stats">
+                    <span id="progressText">السؤال 1 من 10</span>
+                    <span id="scoreText">النقاط: 0</span>
                 </div>
-                <div>
-                    <h1 class="font-bold text-lg md:text-xl leading-tight"></h1>
-                    <p class="text-xs text-blue-200"></p>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
                 </div>
             </div>
-            
-            <div class="flex items-center space-x-2 space-x-reverse bg-white/10 p-1.5 rounded-lg text-sm backdrop-blur-md">
-                <button id="nav-quiz" onclick="switchMode('quiz')" class="px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow">
-                    <i class="fa-solid fa-gamepad me-1"></i> الاختبار
-                </button>
-                <button id="nav-flashcards" onclick="switchMode('flashcards')" class="px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition">
-                    <i class="fa-solid fa-layer-group me-1"></i> البطاقات
-                </button>
-                <button id="nav-rules" onclick="switchMode('rules')" class="px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition">
-                    <i class="fa-solid fa-book me-1"></i> القواعد
-                </button>
+
+            <div style="text-align: center;">
+                <span class="word-badge" id="categoryBadge">مفردات عامة</span>
+                <div class="word-display" id="frenchWord">Bonjour</div>
+            </div>
+
+            <div class="options-grid" id="optionsContainer">
+                <!-- Options injected by JS -->
             </div>
         </div>
-    </header>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+        <!-- Result Screen -->
+        <div class="card result-screen" id="resultCard">
+            <h2>أحسنت! أكملت الاختبار 🎉</h2>
+            <p style="color: var(--text-muted); margin-top: 6px;">إليك ملخص أدائك في الاختبار</p>
 
-        <!-- MODE 1: QUIZ -->
-        <section id="section-quiz" class="block">
-            <!-- Quiz Configuration Bar -->
-            <div id="quiz-config" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 mb-6">
-                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center">
-                    <i class="fa-solid fa-sliders text-blue-600 me-2"></i> إعدادات الاختبار
-                </h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">نوع الكلمات:</label>
-                        <select id="filter-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="all">جميع الكلمات (120+ كلمة)</option>
-                            <option value="exceptions">الاستثناءات الهامة فقط (الكلمات الخادعة)</option>
-                            <option value="masculin">الكلمات المذكرة فقط</option>
-                            <option value="feminin">الكلمات المؤنثة فقط</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">عدد الأسئلة:</label>
-                        <select id="question-count" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="10">10 أسئلة (سريع)</option>
-                            <option value="20" selected>20 سؤالاً (متوسط)</option>
-                            <option value="40">40 سؤالاً (شامل)</option>
-                            <option value="all">كل الكلمات المتاحة</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button onclick="startNewQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-md transition flex items-center justify-center space-x-2 space-x-reverse">
-                            <i class="fa-solid fa-play"></i>
-                            <span>بدء اختبار جديد</span>
-                        </button>
-                    </div>
-                </div>
+            <div class="score-circle">
+                <span class="number" id="percentageResult">0%</span>
+                <span class="label">النتيجة النهائية</span>
             </div>
 
-            <!-- Quiz Play Area -->
-            <div id="quiz-box" class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 relative overflow-hidden">
-                <!-- Progress Header -->
-                <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-500">
-                    <span id="quiz-progress-text">السؤال 1 من 20</span>
-                    <div class="flex items-center space-x-4 space-x-reverse">
-                        <span class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full text-xs">
-                            <i class="fa-solid fa-check me-1"></i> صحيح: <span id="score-correct">0</span>
-                        </span>
-                        <span class="text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full text-xs">
-                            <i class="fa-solid fa-xmark me-1"></i> خطأ: <span id="score-incorrect">0</span>
-                        </span>
-                    </div>
-                </div>
+            <p id="finalScoreDetails" style="font-weight: 500; font-size: 1.1rem; margin-bottom: 10px;"></p>
 
-                <!-- Progress Bar -->
-                <div class="w-full bg-slate-100 h-2.5 rounded-full mb-8 overflow-hidden">
-                    <div id="quiz-progress-bar" class="bg-blue-600 h-full transition-all duration-300 rounded-full" style="width: 5%"></div>
-                </div>
+            <button class="btn-primary" id="restartBtn">إعادة الاختبار الآن</button>
+        </div>
+    </div>
 
-                <!-- Question Card -->
-                <div class="text-center py-6">
-                    <div class="inline-block bg-blue-50 text-blue-700 font-bold px-4 py-1.5 rounded-full text-xs mb-4">
-                        حدد جنس الاسم التالي في اللغة الفرنسية
-                    </div>
-                    
-                    <div class="flex items-center justify-center space-x-3 space-x-reverse mb-3">
-                        <h2 id="current-word" class="french-word text-4xl md:text-5xl font-black text-slate-800 tracking-wide">
-                            thé
-                        </h2>
-                        <button onclick="speakCurrentWord()" title="استمع للنطق" class="text-slate-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition">
-                            <i class="fa-solid fa-volume-high text-2xl"></i>
-                        </button>
-                    </div>
-                    
-                    <p id="current-translation" class="text-lg font-semibold text-slate-500 mb-8">
-                        (شاي)
-                    </p>
-
-                    <!-- Options Buttons -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto" id="quiz-options">
-                        <button onclick="checkAnswer('Masculin')" id="btn-masculin" class="bg-blue-50 hover:bg-blue-600 hover:text-white border-2 border-blue-200 text-blue-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group">
-                            <span class="text-2xl">👨</span>
-                            <span>مذكر</span>
-                            <span class="text-xs opacity-75 font-normal"></span>
-                        </button>
-                        
-                        <button onclick="checkAnswer('Féminin')" id="btn-feminin" class="bg-pink-50 hover:bg-pink-600 hover:text-white border-2 border-pink-200 text-pink-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group">
-                            <span class="text-2xl">👩</span>
-                            <span>مؤنث</span>
-                            <span class="text-xs opacity-75 font-normal"></span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Feedback / Explanation Panel -->
-                <div id="feedback-panel" class="hidden mt-6 p-5 rounded-2xl border transition-all">
-                    <div class="flex items-start space-x-3 space-x-reverse">
-                        <div id="feedback-icon" class="text-3xl"></div>
-                        <div class="flex-grow">
-                            <h3 id="feedback-title" class="font-bold text-lg"> الإجابة </h3>
-                            <p id="feedback-text" class="text-sm mt-1 leading-relaxed"></p>
-                            <div id="feedback-rule" class="text-xs mt-2 bg-white/70 p-2.5 rounded-lg font-semibold border border-slate-200/50"></div>
-                        </div>
-                    </div>
-                    <button onclick="nextQuestion()" class="mt-4 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center space-x-2 space-x-reverse">
-                        <span>السؤال التالي</span>
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                </div>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-weight: 700;">إعدادات الاختبار</h3>
+                <button class="icon-btn" id="closeSettingsBtn" style="width: 32px; height: 32px; box-shadow: none;">✕</button>
+            </div>
+            
+            <div class="setting-item">
+                <label for="questionCountInput">عدد الأسئلة:</label>
+                <input type="number" id="questionCountInput" min="3" max="50" value="10">
             </div>
 
-            <!-- Quiz Results Modal / View -->
-            <div id="quiz-results" class="hidden bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center">
-                <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
-                    🏆
-                </div>
-                <h2 class="text-2xl font-black text-slate-800 mb-1">أحسنت! أكملت الاختبار</h2>
-                <p class="text-slate-500 text-sm mb-6">إليك ملخص نتيجتك في تحديد أضداد وجنس الأسماء</p>
-
-                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6">
-                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                        <span class="block text-xs text-slate-400 font-bold">المجموع</span>
-                        <span id="result-total" class="text-xl font-black text-slate-700">20</span>
-                    </div>
-                    <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
-                        <span class="block text-xs text-emerald-600 font-bold">صحيح</span>
-                        <span id="result-correct" class="text-xl font-black text-emerald-600">18</span>
-                    </div>
-                    <div class="bg-rose-50 p-3 rounded-2xl border border-rose-100">
-                        <span class="block text-xs text-rose-600 font-bold">النسبة</span>
-                        <span id="result-percent" class="text-xl font-black text-rose-600">90%</span>
-                    </div>
-                </div>
-
-                <!-- Review Incorrect Words if any -->
-                <div id="incorrect-words-wrapper" class="text-right max-w-md mx-auto mb-6 hidden">
-                    <h3 class="font-bold text-sm text-slate-700 mb-2">الكلمات التي أخطأت فيها:</h3>
-                    <div id="incorrect-words-list" class="space-y-2 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-xl border"></div>
-                </div>
-
-                <div class="flex justify-center space-x-3 space-x-reverse">
-                    <button onclick="startNewQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition">
-                        <i class="fa-solid fa-rotate-right me-1"></i> إعادة الاختبار
-                    </button>
-                    <button onclick="switchMode('flashcards')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-6 rounded-xl transition">
-                        <i class="fa-solid fa-layer-group me-1"></i> مراجعة البطاقات
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODE 2: FLASHCARDS -->
-        <section id="section-flashcards" class="hidden">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 mb-6 flex flex-wrap justify-between items-center gap-3">
-                <h2 class="font-bold text-slate-800 text-lg">بطاقات المراجعة السريعة</h2>
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <select id="flashcard-filter" onchange="renderFlashcard()" class="bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm font-semibold text-slate-700">
-                        <option value="all">جميع الكلمات</option>
-                        <option value="masculin">الكلمات المذكرة فقط</option>
-                        <option value="feminin">الكلمات المؤنثة فقط</option>
-                        <option value="exceptions">الاستثناءات الهامة</option>
-                    </select>
-                </div>
+            <div class="setting-item">
+                <label for="soundToggle">المؤثرات الصوتية:</label>
+                <label class="switch">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider"></span>
+                </label>
             </div>
 
-            <!-- Flashcard Display -->
-            <div class="max-w-md mx-auto">
-                <div id="flashcard-container" onclick="flipCard()" class="flip-card cursor-pointer h-72 w-full">
-                    <div class="flip-card-inner relative w-full h-full duration-500 rounded-3xl shadow-xl border border-slate-200">
-                        
-                        <!-- Front side -->
-                        <div class="flip-card-front absolute w-full h-full bg-white rounded-3xl p-6 flex flex-col justify-between items-center text-center">
-                            <div class="w-full flex justify-between items-center text-xs text-slate-400 font-bold">
-                                <span>انقر لقلب البطاقة 🔄</span>
-                                <span id="fc-index">1 / 100</span>
-                            </div>
+            <button class="btn-primary" id="saveSettingsBtn">حفظ وتطبيق</button>
+        </div>
+    </div>
 
-                            <div class="my-auto">
-                                <h3 id="fc-word" class="french-word text-4xl font-black text-slate-800 mb-2">
-                                    maison
-                                </h3>
-                                <p id="fc-translation" class="text-slate-500 text-lg font-semibold">(منزل)</p>
-                            </div>
-
-                            <button onclick="event.stopPropagation(); speakText(document.getElementById('fc-word').innerText)" class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-2.5 rounded-full text-sm font-bold flex items-center space-x-1 space-x-reverse">
-                                <i class="fa-solid fa-volume-high"></i>
-                                <span>استمع للنطق</span>
-                            </button>
-                        </div>
-
-                        <!-- Back side -->
-                        <div class="flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br text-white shadow-xl" id="fc-back-bg">
-                            <div class="w-full flex justify-between items-center text-xs opacity-80 font-bold">
-                                <span>تفاصيل الجنس والقاعدة</span>
-                                <span id="fc-gender-badge" class="px-2 py-0.5 rounded-full bg-white/20">Féminin</span>
-                            </div>
-
-                            <div class="my-auto">
-                                <div id="fc-article" class="french-word text-3xl font-black mb-1">
-                                    la maison
-                                </div>
-                                <div id="fc-gender-text" class="text-xl font-bold mb-3">
-                                    اسم مؤنث (Féminin)
-                                </div>
-                                <p id="fc-rule" class="text-xs bg-black/20 p-3 rounded-xl backdrop-blur-sm max-w-xs leading-relaxed">
-                                    الأسماء التي تنتهي بـ -aison تكون مؤنثة.
-                                </p>
-                            </div>
-
-                            <span class="text-xs opacity-75">انقر مرة أخرى للتراجع ↩️</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Navigation Controls -->
-                <div class="flex justify-between items-center mt-6">
-                    <button onclick="prevFlashcard()" class="bg-white hover:bg-slate-100 border text-slate-700 font-bold px-5 py-2.5 rounded-xl shadow-sm transition">
-                        <i class="fa-solid fa-arrow-right me-1"></i> السابقة
-                    </button>
-                    <button onclick="randomFlashcard()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2.5 rounded-xl transition">
-                        <i class="fa-solid fa-shuffle"></i> عشوائي
-                    </button>
-                    <button onclick="nextFlashcard()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition">
-                        التالية <i class="fa-solid fa-arrow-left ms-1"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-  
-
-    <!-- App Logic Script -->
     <script>
-        // Database of all words extracted from the images with exact properties and explanations
-        const vocabularyData = [
-            // IMAGE 4: Le (Masculin) Words
-            { word: "thé", arabic: "شاي", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للمشروبات." },
-            { word: "café", arabic: "قهوة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للمشروبات." },
-            { word: "jus", arabic: "عصير", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
-            { word: "lait", arabic: "حليب", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع." },
-            { word: "problème", arabic: "مشكلة", gender: "Masculin", article: "le", isException: true, rule: "كلمة تنتهي بـ -ème وهي مذكر." },
-            { word: "sucre", arabic: "سكر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر شائع للأطعمة." },
-            { word: "livre", arabic: "كتاب", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "cahier", arabic: "دفتر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -er." },
-            { word: "stylo", arabic: "قلم حبر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -o." },
-            { word: "exercice", arabic: "تمرين", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
-            { word: "texte", arabic: "نص", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -exte." },
-            { word: "séminaire", arabic: "ندوة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "outil", arabic: "أداة", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
-            { word: "copain", arabic: "صديق", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر للفاعل العاقل." },
-            { word: "ami", arabic: "صديق", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر للفاعل العاقل." },
-            { word: "monde", arabic: "عالم", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "travail", arabic: "عمل", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -ail تكون مذكرة." },
-            { word: "emploi", arabic: "وظيفة", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر." },
-            { word: "site", arabic: "موقع", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "arbre", arabic: "شجرة", gender: "Masculin", article: "l'", isException: false, rule: "جميع أسماء الأشجار مذكر في الفرنسية." },
-            { word: "essai", arabic: "تجربة / مقال", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -ai." },
-            { word: "roman", arabic: "رواية", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -an." },
-            { word: "siècle", arabic: "قرن", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "concert", arabic: "حفلة موسيقية", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -ert." },
-            { word: "résultat", arabic: "نتيجة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -at." },
-            { word: "endroit", arabic: "مكان", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -oit." },
-            { word: "lieu", arabic: "مكان", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -eu تكون مذكرة." },
-            { word: "accident", arabic: "حادث", gender: "Masculin", article: "l'", isException: false, rule: "الأسماء المنتهية بـ -ent تكون مذكرة." },
-            { word: "bruit", arabic: "ضجة / صوت", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر." },
-            { word: "jour", arabic: "يوم", gender: "Masculin", article: "le", isException: false, rule: "أيام الأسبوع وأوقات اليوم مذكر بشكل عام." },
-            { word: "cadeau", arabic: "هدية", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -eau تكون مذكرة عادة." },
-            { word: "document", arabic: "وثيقة", gender: "Masculin", article: "le", isException: false, rule: "الأسماء المنتهية بـ -ment تكون مذكرة." },
-
-            // IMAGE 1: La (Féminin) Words
-            { word: "mère", arabic: "أم", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي للإناث." },
-            { word: "sœur", arabic: "أخت", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي للإناث." },
-            { word: "femme", arabic: "امرأة / زوجة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي." },
-            { word: "tante", arabic: "عمة / خالة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث طبيعي." },
-            { word: "fleur", arabic: "زهرة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -eur (غير الفاعلين) مؤنثة." },
-            { word: "remarque", arabic: "ملاحظة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "lampe", arabic: "مصباح", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "herbe", arabic: "عشب", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث." },
-            { word: "voix", arabic: "صوت", gender: "Féminin", article: "la", isException: true, rule: "كلمة مؤنثة تنتهي بـ -x." },
-            { word: "histoire", arabic: "قصة / تاريخ", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -oire." },
-            { word: "revue", arabic: "مجلة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ue." },
-            { word: "œuvre", arabic: "عمل فني / إنجاز", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -vre." },
-            { word: "amie", arabic: "صديقة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث للإناث." },
-            { word: "copine", arabic: "صديقة / زميلة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "vie", arabic: "حياة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -ie تكون مؤنثة." },
-            { word: "semaine", arabic: "أسبوع", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -aine." },
-            { word: "période", arabic: "فترة زمنية", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ode." },
-            { word: "porte", arabic: "باب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -te." },
-            { word: "fenêtre", arabic: "نافذة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -tre." },
-            { word: "chambre", arabic: "غرفة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -bre." },
-            { word: "école", arabic: "مدرسة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -ole." },
-            { word: "règle", arabic: "قاعدة / مسطرة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "grammaire", arabic: "قواعد اللغة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -aire." },
-            { word: "lettre", arabic: "رسالة / حرف", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -tre." },
-            { word: "aide", arabic: "مساعدة", gender: "Féminin", article: "l'", isException: false, rule: "اسم مؤنث ينتهي بـ -de." },
-            { word: "mer", arabic: "بحر", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "place", arabic: "ميدان / مكان", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ace." },
-            { word: "opinion", arabic: "رأي", gender: "Féminin", article: "l'", isException: false, rule: "الأسماء المنتهية بـ -ion مؤنثة." },
-            { word: "rue", arabic: "شارع", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ue." },
-            { word: "route", arabic: "طريق", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -te." },
-            { word: "voisine", arabic: "جارة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث للإناث." },
-            { word: "cousine", arabic: "ابنة عم / خالة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث للإناث." },
-            { word: "région", arabic: "منطقة", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -gion مؤنثة." },
-            { word: "robe", arabic: "فستان", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -be." },
-            { word: "nuit", arabic: "ليل", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "pluie", arabic: "مطر", gender: "Féminin", article: "la", isException: false, rule: "الأسماء المنتهية بـ -ie مؤنثة." },
-            { word: "planète", arabic: "كوكب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ète." },
-            { word: "chose", arabic: "شيء", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ose." },
-            { word: "cause", arabic: "سبب", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -ause." },
-            { word: "photo", arabic: "صورة", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة photographie." },
-            { word: "moto", arabic: "دراجة نارية", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة motocyclette." },
-            { word: "radio", arabic: "راديو", gender: "Féminin", article: "la", isException: true, rule: "مؤنث لأنها اختصار لكلمة radiophonie." },
-            { word: "fin", arabic: "نهاية", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث." },
-            { word: "cour", arabic: "فناء / ساحة", gender: "Féminin", article: "la", isException: false, rule: "اسم مؤنث ينتهي بـ -our." },
-
-            // EXCEPTIONS FROM IMAGE 3 & 4 (High Exam Focus)
-            { word: "peau", arabic: "جلد", gender: "Féminin", article: "la", isException: true, rule: "استثناء هام! معظم الكلمات المنتهية بـ -eau مذكر ما عدا (peau) و (eau)." },
-            { word: "eau", arabic: "ماء", gender: "Féminin", article: "l'", isException: true, rule: "استثناء هام! تنتهي بـ -eau ولكنها كلمة مؤنثة." },
-            { word: "page", arabic: "صفحة", gender: "Féminin", article: "la", isException: true, rule: "استثناء! مقطع -age مذكر عادةً ما عدا: page, plage, cage, nage, rage, image." },
-            { word: "plage", arabic: "شاطئ", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
-            { word: "cage", arabic: "قفص", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
-            { word: "nage", arabic: "سباحة", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
-            { word: "rage", arabic: "غضب / داء الكلب", gender: "Féminin", article: "la", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
-            { word: "image", arabic: "صورة", gender: "Féminin", article: "l'", isException: true, rule: "استثناء من نهاية -age المذكرة (مؤنث)." },
-            { word: "parapluie", arabic: "مظلة / شمسية", gender: "Féminin", article: "le", isException: true, rule: "استثناء! مذكر رغم انتهائها بـ -ie." },
-            { word: "incendie", arabic: "حريق", gender: "Masculin", article: "l'", isException: true, rule: "اسم مذكر رغم انتهائه بـ -ie." },
-            { word: "génie", arabic: "عبقرية / عبقري", gender: "Masculin", article: "le", isException: true, rule: "اسم مذكر ينتهي بـ -ie." },
-            { word: "silence", arabic: "صمت", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -ence مؤنثة عادة ما عدا le silence (مذكر)." },
-            { word: "stade", arabic: "ملعب / استاد", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -ade مؤنثة ما عدا le stade (مذكر)." },
-            { word: "été", arabic: "صيف", gender: "Masculin", article: "l'", isException: true, rule: "استثناء! نهايات -té مؤنثة عادة ما عدا l'été, le côté, le comité." },
-            { word: "côté", arabic: "جانب", gender: "Masculin", article: "le", isException: true, rule: "استثناء من نهايات -té المؤنثة (مذكر)." },
-            { word: "comité", arabic: "لجنة", gender: "Masculin", article: "le", isException: true, rule: "استثناء من نهايات -té المؤنثة (مذكر)." },
-            { word: "musée", arabic: "متحف", gender: "Masculin", article: "le", isException: true, rule: "استثناء شهير جداً! نهايات -ée مؤنثة ما عدا le musée و le lycée (مذكر)." },
-            { word: "lycée", arabic: "مدرسة ثانوية", gender: "Masculin", article: "le", isException: true, rule: "استثناء شهير جداً! مذكر رغم انتهائه بـ -ée." },
-            { word: "pamplemousse", arabic: "ليمون هندي (جريبت فروت)", gender: "Masculin", article: "le", isException: true, rule: "استثناء! نهايات -sse مؤنثة ما عدا le pamplemousse (مذكر)." },
-            { word: "père", arabic: "أب", gender: "Masculin", article: "le", isException: true, rule: "مذكر طبيعي للذكور رغم انتهائه بـ -ère." },
-            { word: "frère", arabic: "أخ", gender: "Masculin", article: "le", isException: true, rule: "مذكر طبيعي للذكور رغم انتهائه بـ -ère." },
-            { word: "ministère", arabic: "وزارة", gender: "Masculin", article: "le", isException: true, rule: "استثناء! اسم مذكر ينتهي بـ -ère." },
-            { word: "mystère", arabic: "سر / غموض", gender: "Masculin", article: "le", isException: true, rule: "استثناء! اسم مذكر ينتهي بـ -ère." },
-
-            // IMAGE 2: Words ending in S / X in Singular
-            { word: "pays", arabic: "بلد / دولة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد والجمع." },
-            { word: "fils", arabic: "ابن", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
-            { word: "jus", arabic: "عصير", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s في المفرد." },
-            { word: "héros", arabic: "بطل", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "temps", arabic: "وقت / طقس", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "succès", arabic: "نجاح", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "palais", arabic: "قصر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "discours", arabic: "خطاب / كلمة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "mois", arabic: "شهر", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "corps", arabic: "جسم", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "cours", arabic: "درس / حصة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "bus", arabic: "حافلة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "repas", arabic: "وجبة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "avis", arabic: "رأي", gender: "Masculin", article: "l'", isException: false, rule: "اسم مذكر ينتهي بـ -s." },
-            { word: "prix", arabic: "سعر / جائزة", gender: "Masculin", article: "le", isException: false, rule: "اسم مذكر ينتهي بـ -x." },
-            { word: "fois", arabic: "مرة", gender: "Féminin", article: "la", isException: true, rule: "اسم مؤنث ينتهي بـ -s في المفرد." },
-            { word: "paix", arabic: "سلام", gender: "Féminin", article: "la", isException: true, rule: "اسم مؤنث ينتهي بـ -x." },
-
-            // SUFFIX RULE EXAMPLES FROM IMAGE 3
-            { word: "action", arabic: "حدث / عمل", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -tion مؤنثة دائماً." },
-            { word: "cigarette", arabic: "سيجارة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -tte مؤنثة." },
-            { word: "fille", arabic: "بنت / ابنة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -lle مؤنثة." },
-            { word: "classe", arabic: "فصل دراسي", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -sse مؤنثة." },
-            { word: "personne", arabic: "شخص", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -nne مؤنثة." },
-            { word: "année", arabic: "سنة / عام", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ée مؤنثة." },
-            { word: "chanteuse", arabic: "مغنية", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -euse مؤنثة." },
-            { word: "matière", arabic: "مادة دراسية", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ère مؤنثة." },
-            { word: "chemise", arabic: "قميص", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ise مؤنثة." },
-            { word: "maison", arabic: "منزل", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -aison مؤنثة." },
-            { word: "activité", arabic: "نشاط", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -té مؤنثة." },
-            { word: "télévision", arabic: "تلفزيون", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -sion مؤنثة." },
-            { word: "réflexion", arabic: "تفكير / تفكر", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -xion مؤنثة." },
-            { word: "habitude", arabic: "عادة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ude مؤنثة." },
-            { word: "étude", arabic: "دراسة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ude مؤنثة." },
-            { word: "limonade", arabic: "عصير ليمون", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ade مؤنثة." },
-            { word: "élégance", arabic: "أناقة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ance مؤنثة." },
-            { word: "patience", arabic: "صبر", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ence مؤنثة." },
-            { word: "voiture", arabic: "سيارة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -ure مؤنثة." },
-            { word: "boulangerie", arabic: "مخبز", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -rie مؤنثة." },
-            { word: "actrice", arabic: "ممثلة", gender: "Féminin", article: "une", isException: false, rule: "الأسماء المنتهية بـ -rice مؤنثة." }
+        /* ==========================================================================
+           1. DATABASE OF WORDS (مصفوفة الكلمات - جاهزة للتوسيع ببيانات الصور لاحقاً)
+           ========================================================================== */
+        const wordsDatabase = [
+            { french: "Bonjour", arabic: "مرحباً / صباح الخير", type: "تحية" },
+            { french: "Merci", arabic: "شكراً", type: "مفردات عامة" },
+            { french: "S'il vous plaît", arabic: "من فضلك", type: "تعبير" },
+            { french: "L'école", arabic: "المدرسة", type: "أسماء" },
+            { french: "Manger", arabic: "يأكل", type: "أفعال" },
+            { french: "Toujours", arabic: "دائماً", type: "ظروف" },
+            { french: "La maison", arabic: "المنزل", type: "أسماء" },
+            { french: "Comprendre", arabic: "يفهم", type: "أفعال" },
+            { french: "Magnifique", arabic: "رائع / بديع", type: "صفات" },
+            { french: "Aujourd'hui", arabic: "اليوم", type: "زمن" }
         ];
 
-        // Quiz App State
-        let currentQuizList = [];
-        let currentQuestionIndex = 0;
-        let scoreCorrect = 0;
-        let scoreIncorrect = 0;
-        let incorrectQuestions = [];
-        let isAnswered = false;
+        /* ==========================================================================
+           2. STATE MANAGEMENT & VARS
+           ========================================================================== */
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let maxQuestions = 10;
+        let soundEnabled = true;
+        let isAnsweringBlocked = false;
 
-        // Flashcards App State
-        let flashcardList = [];
-        let flashcardIndex = 0;
-        let isCardFlipped = false;
+        // Web Audio API Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-        // Speech Synthesis Initialization
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Stop ongoing speech
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'fr-FR';
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(130, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
             }
         }
 
-        function speakCurrentWord() {
-            if (currentQuizList[currentQuestionIndex]) {
-                speakText(currentQuizList[currentQuestionIndex].word);
-            }
+        /* ==========================================================================
+           3. DOM ELEMENTS
+           ========================================================================== */
+        const quizCard = document.getElementById('quizCard');
+        const resultCard = document.getElementById('resultCard');
+        const frenchWordEl = document.getElementById('frenchWord');
+        const categoryBadgeEl = document.getElementById('categoryBadge');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const scoreText = document.getElementById('scoreText');
+        const percentageResult = document.getElementById('percentageResult');
+        const finalScoreDetails = document.getElementById('finalScoreDetails');
+
+        // Modal Elements
+        const settingsModal = document.getElementById('settingsModal');
+        const openSettingsBtn = document.getElementById('openSettingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const questionCountInput = document.getElementById('questionCountInput');
+        const soundToggle = document.getElementById('soundToggle');
+        const restartBtn = document.getElementById('restartBtn');
+
+        /* ==========================================================================
+           4. QUIZ LOGIC
+           ========================================================================== */
+        function startQuiz() {
+            // Shuffle database & pick subset
+            const shuffled = [...wordsDatabase].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, Math.min(maxQuestions, wordsDatabase.length));
+            
+            currentIndex = 0;
+            score = 0;
+            isAnsweringBlocked = false;
+
+            resultCard.style.display = 'none';
+            quizCard.style.display = 'block';
+
+            updateScoreDisplay();
+            loadQuestion();
         }
 
-        // Mode Switching
-        function switchMode(mode) {
-            document.getElementById('section-quiz').classList.add('hidden');
-            document.getElementById('section-flashcards').classList.add('hidden');
-            document.getElementById('section-rules').classList.add('hidden');
+        function loadQuestion() {
+            isAnsweringBlocked = false;
+            const currentItem = currentQuestions[currentIndex];
 
-            document.getElementById('nav-quiz').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
-            document.getElementById('nav-flashcards').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
-            document.getElementById('nav-rules').className = "px-3 py-1.5 rounded-md font-semibold hover:bg-white/20 transition";
+            // UI updates
+            frenchWordEl.textContent = currentItem.french;
+            categoryBadgeEl.textContent = currentItem.type || "مفردات";
+            
+            // Progress Bar
+            const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            progressText.textContent = `السؤال ${currentIndex + 1} من ${currentQuestions.length}`;
 
-            if (mode === 'quiz') {
-                document.getElementById('section-quiz').classList.remove('hidden');
-                document.getElementById('nav-quiz').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
-            } else if (mode === 'flashcards') {
-                document.getElementById('section-flashcards').classList.remove('hidden');
-                document.getElementById('nav-flashcards').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
-                initFlashcards();
-            } else if (mode === 'rules') {
-                document.getElementById('section-rules').classList.remove('hidden');
-                document.getElementById('nav-rules').className = "px-3 py-1.5 rounded-md font-semibold transition bg-white text-blue-800 shadow";
-            }
-        }
+            // Generate options (1 correct + 3 wrong)
+            optionsContainer.innerHTML = '';
+            const options = generateOptions(currentItem.arabic);
 
-        // Utility: Shuffle Array
-        function shuffle(array) {
-            let currentIndex = array.length, randomIndex;
-            let newArr = [...array];
-            while (currentIndex !== 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [newArr[currentIndex], newArr[randomIndex]] = [newArr[randomIndex], newArr[currentIndex]];
-            }
-            return newArr;
-        }
-
-        // Quiz Logic
-        function startNewQuiz() {
-            const filterType = document.getElementById('filter-type').value;
-            const questionCountVal = document.getElementById('question-count').value;
-
-            // Filter words
-            let filtered = vocabularyData.filter(item => {
-                if (filterType === 'exceptions') return item.isException;
-                if (filterType === 'masculin') return item.gender === 'Masculin';
-                if (filterType === 'feminin') return item.gender === 'Féminin';
-                return true;
+            options.forEach(optionText => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = optionText;
+                btn.onclick = () => handleAnswer(optionText, currentItem.arabic, btn);
+                optionsContainer.appendChild(btn);
             });
+        }
 
-            if (filtered.length === 0) filtered = [...vocabularyData];
+        function generateOptions(correctAnswer) {
+            const options = [correctAnswer];
+            const allArabicMeanings = wordsDatabase.map(w => w.arabic).filter(a => a !== correctAnswer);
+            const shuffledMeanings = allArabicMeanings.sort(() => 0.5 - Math.random());
 
-            // Shuffle
-            currentQuizList = shuffle(filtered);
-
-            // Limit count
-            if (questionCountVal !== 'all') {
-                const count = parseInt(questionCountVal);
-                currentQuizList = currentQuizList.slice(0, count);
+            // Get up to 3 distractor choices
+            for (let i = 0; i < Math.min(3, shuffledMeanings.length); i++) {
+                options.push(shuffledMeanings[i]);
             }
 
-            // Reset state
-            currentQuestionIndex = 0;
-            scoreCorrect = 0;
-            scoreIncorrect = 0;
-            incorrectQuestions = [];
-            isAnswered = false;
-
-            document.getElementById('score-correct').innerText = "0";
-            document.getElementById('score-incorrect').innerText = "0";
-            document.getElementById('quiz-box').classList.remove('hidden');
-            document.getElementById('quiz-results').classList.add('hidden');
-            document.getElementById('quiz-config').classList.remove('hidden');
-
-            renderQuestion();
+            return options.sort(() => 0.5 - Math.random());
         }
 
-        function renderQuestion() {
-            isAnswered = false;
-            const currentObj = currentQuizList[currentQuestionIndex];
+        function handleAnswer(selectedAnswer, correctAnswer, btnElement) {
+            if (isAnsweringBlocked) return;
+            isAnsweringBlocked = true;
 
-            // Progress text and bar
-            const total = currentQuizList.length;
-            document.getElementById('quiz-progress-text').innerText = `السؤال ${currentQuestionIndex + 1} من ${total}`;
-            const pct = ((currentQuestionIndex) / total) * 100;
-            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
 
-            // Display Word
-            document.getElementById('current-word').innerText = currentObj.word;
-            document.getElementById('current-translation').innerText = `(${currentObj.arabic})`;
-
-            // Reset Option Buttons
-            const btnM = document.getElementById('btn-masculin');
-            const btnF = document.getElementById('btn-feminin');
-
-            btnM.disabled = false;
-            btnF.disabled = false;
-            btnM.className = "bg-blue-50 hover:bg-blue-600 hover:text-white border-2 border-blue-200 text-blue-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group";
-            btnF.className = "bg-pink-50 hover:bg-pink-600 hover:text-white border-2 border-pink-200 text-pink-800 font-bold text-xl py-4 rounded-2xl transition shadow-sm flex flex-col items-center justify-center space-y-1 group";
-
-            // Hide Feedback
-            document.getElementById('feedback-panel').classList.add('hidden');
-
-            // Auto Speak Word
-            speakText(currentObj.word);
-        }
-
-        function checkAnswer(selectedGender) {
-            if (isAnswered) return;
-            isAnswered = true;
-
-            const currentObj = currentQuizList[currentQuestionIndex];
-            const isCorrect = (selectedGender === currentObj.gender);
-
-            const btnM = document.getElementById('btn-masculin');
-            const btnF = document.getElementById('btn-feminin');
-            btnM.disabled = true;
-            btnF.disabled = true;
-
-            const feedbackPanel = document.getElementById('feedback-panel');
-            const feedbackIcon = document.getElementById('feedback-icon');
-            const feedbackTitle = document.getElementById('feedback-title');
-            const feedbackText = document.getElementById('feedback-text');
-            const feedbackRule = document.getElementById('feedback-rule');
-
-            const fullArticle = currentObj.article === "l'" ? `l'${currentObj.word}` : `${currentObj.article} ${currentObj.word}`;
-
-
-            // Highlight chosen/correct button
-            if (selectedGender === 'Masculin') {
-                btnM.className = isCorrect ? "bg-emerald-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg" : "bg-rose-600 text-white font-bold text-xl py-4 rounded-2xl opacity-80";
+            if (selectedAnswer === correctAnswer) {
+                btnElement.classList.add('correct');
+                playSound('correct');
+                score++;
+                updateScoreDisplay();
             } else {
-                btnF.className = isCorrect ? "bg-emerald-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg" : "bg-rose-600 text-white font-bold text-xl py-4 rounded-2xl opacity-80";
+                btnElement.classList.add('wrong');
+                playSound('wrong');
+                // Highlight correct one
+                allButtons.forEach(b => {
+                    if (b.textContent === correctAnswer) b.classList.add('correct');
+                });
             }
 
-            // Set Rule Explanation
-            feedbackRule.innerHTML = `<i class="fa-solid fa-circle-info me-1 text-blue-600"></i> <strong>سبب التحديد / القاعدة:</strong> ${currentObj.rule}`;
-            feedbackPanel.classList.remove('hidden');
+            // Next question delay
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    loadQuestion();
+                } else {
+                    showFinalResult();
+                }
+            }, 1200);
         }
 
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < currentQuizList.length) {
-                renderQuestion();
-            } else {
-                finishQuiz();
-            }
+        function updateScoreDisplay() {
+            scoreText.textContent = `النقاط: ${score}`;
         }
 
-        function finishQuiz() {
-            document.getElementById('quiz-box').classList.add('hidden');
-            document.getElementById('quiz-results').classList.remove('hidden');
+        function showFinalResult() {
+            quizCard.style.display = 'none';
+            resultCard.style.display = 'block';
 
-            const total = currentQuizList.length;
-            const pct = Math.round((scoreCorrect / total) * 100);
-
-            document.getElementById('result-total').innerText = total;
-            document.getElementById('result-correct').innerText = scoreCorrect;
-            document.getElementById('result-percent').innerText = `${pct}%`;
-
-            const incorrectWrapper = document.getElementById('incorrect-words-wrapper');
-            const incorrectList = document.getElementById('incorrect-words-list');
-
-            if (incorrectQuestions.length > 0) {
-                incorrectWrapper.classList.remove('hidden');
-                incorrectList.innerHTML = incorrectQuestions.map(item => `
-                    <div class="flex justify-between items-center text-xs bg-white p-2 rounded-lg border">
-                        <span class="french-word font-bold text-slate-800">${item.article === "l'" ? `l'${item.word}` : `${item.article} ${item.word}`}</span>
-                        <span class="text-slate-500">(${item.arabic})</span>
-                        <span class="font-bold ${item.gender === 'Masculin' ? 'text-blue-600' : 'text-pink-600'}">${item.gender}</span>
-                    </div>
-                `).join('');
-            } else {
-                incorrectWrapper.classList.add('hidden');
-            }
+            const percentage = Math.round((score / currentQuestions.length) * 100);
+            percentageResult.textContent = `${percentage}%`;
+            finalScoreDetails.textContent = `أجبت بشكل صحيح على ${score} من أصل ${currentQuestions.length} سؤال.`;
+            progressBar.style.width = `100%`;
         }
 
-        // Flashcards Logic
-        function initFlashcards() {
-            const filter = document.getElementById('flashcard-filter').value;
-            flashcardList = vocabularyData.filter(item => {
-                if (filter === 'masculin') return item.gender === 'Masculin';
-                if (filter === 'feminin') return item.gender === 'Féminin';
-                if (filter === 'exceptions') return item.isException;
-                return true;
-            });
+        /* ==========================================================================
+           5. SETTINGS & MODAL CONTROLS
+           ========================================================================== */
+        openSettingsBtn.onclick = () => settingsModal.classList.add('active');
+        closeSettingsBtn.onclick = () => settingsModal.classList.remove('active');
 
-            flashcardIndex = 0;
-            renderFlashcard();
-        }
-
-        function renderFlashcard() {
-            if (flashcardList.length === 0) return;
-
-            const card = flashcardList[flashcardIndex];
-            isCardFlipped = false;
-            document.getElementById('flashcard-container').classList.remove('flipped');
-
-            // Front
-            document.getElementById('fc-index').innerText = `${flashcardIndex + 1} / ${flashcardList.length}`;
-            document.getElementById('fc-word').innerText = card.word;
-            document.getElementById('fc-translation').innerText = `(${card.arabic})`;
-
-            // Back
-            const fullArticle = card.article === "l'" ? `l'${card.word}` : `${card.article} ${card.word}`;
-            document.getElementById('fc-article').innerText = fullArticle;
-            document.getElementById('fc-gender-text').innerText = card.gender === 'Masculin' ? 'اسم مذكر (Masculin)' : 'اسم مؤنث (Féminin)';
-            document.getElementById('fc-gender-badge').innerText = card.gender;
-            document.getElementById('fc-rule').innerText = card.rule;
-
-            const backBg = document.getElementById('fc-back-bg');
-            if (card.gender === 'Masculin') {
-                backBg.className = "flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-blue-600 to-indigo-800 text-white shadow-xl";
-            } else {
-                backBg.className = "flip-card-back absolute w-full h-full rounded-3xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-pink-600 to-rose-800 text-white shadow-xl";
-            }
-        }
-
-        function flipCard() {
-            isCardFlipped = !isCardFlipped;
-            const container = document.getElementById('flashcard-container');
-            if (isCardFlipped) {
-                container.classList.add('flipped');
-            } else {
-                container.classList.remove('flipped');
-            }
-        }
-
-        function nextFlashcard() {
-            if (flashcardIndex < flashcardList.length - 1) {
-                flashcardIndex++;
-                renderFlashcard();
-            }
-        }
-
-        function prevFlashcard() {
-            if (flashcardIndex > 0) {
-                flashcardIndex--;
-                renderFlashcard();
-            }
-        }
-
-        function randomFlashcard() {
-            flashcardIndex = Math.floor(Math.random() * flashcardList.length);
-            renderFlashcard();
-        }
-
-        // Initialize on load
-        window.onload = function() {
-            startNewQuiz();
+        saveSettingsBtn.onclick = () => {
+            const newCount = parseInt(questionCountInput.value);
+            if (newCount > 0) maxQuestions = newCount;
+            soundEnabled = soundToggle.checked;
+            
+            settingsModal.classList.remove('active');
+            startQuiz();
         };
+
+        restartBtn.onclick = startQuiz;
+
+        // Initialize App on Load
+        window.onload = startQuiz;
     </script>
 </body>
 </html>
-
