@@ -466,7 +466,7 @@
                 </div>
             </div>
 
-            <!-- Clean Display Area without Top Categories -->
+            <!-- Clean Display Area -->
             <div class="word-display-container">
                 <div class="word-display" id="frenchWord">Maison</div>
                 <div class="word-meaning" id="arabicMeaning">المنزل</div>
@@ -518,7 +518,16 @@
                 <button class="icon-btn" id="closeSettingsBtn" style="width: 32px; height: 32px; box-shadow: none;">✕</button>
             </div>
             
-            <!-- Option 1: All Words Toggle -->
+            <!-- Option 1: Show/Hide Translation -->
+            <div class="setting-item">
+                <label for="showMeaningToggle">إظهار الترجمة العربية</label>
+                <label class="switch">
+                    <input type="checkbox" id="showMeaningToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Option 2: All Words Toggle -->
             <div class="setting-item">
                 <label for="allWordsToggle">كل الكلمات</label>
                 <label class="switch">
@@ -527,13 +536,13 @@
                 </label>
             </div>
 
-            <!-- Option 2: Number of Questions Input -->
+            <!-- Option 3: Number of Questions Input -->
             <div class="setting-item">
                 <label for="questionCountInput">عدد الكلمات</label>
                 <input type="number" id="questionCountInput" min="1" max="200" value="10">
             </div>
 
-            <!-- Option 3: Sound FX Toggle -->
+            <!-- Option 4: Sound FX Toggle -->
             <div class="setting-item">
                 <label for="soundToggle">المؤثرات الصوتية</label>
                 <label class="switch">
@@ -699,6 +708,7 @@
         let maxQuestions = 10;
         let isAllWordsMode = false;
         let soundEnabled = true;
+        let showMeaning = true; // التحكم بحالة إظهار/إخفاء الترجمة
         let isAnsweringBlocked = false;
         let wrongWordsList = [];
         let myChartInstance = null;
@@ -762,6 +772,7 @@
         const questionCountInput = document.getElementById('questionCountInput');
         const allWordsToggle = document.getElementById('allWordsToggle');
         const soundToggle = document.getElementById('soundToggle');
+        const showMeaningToggle = document.getElementById('showMeaningToggle');
 
         const errorsContainer = document.getElementById('errorsContainer');
         const errorsList = document.getElementById('errorsList');
@@ -799,6 +810,9 @@
 
             frenchWordEl.textContent = currentItem.french;
             arabicMeaningEl.textContent = currentItem.arabic;
+
+            // إخفاء/إظهار الترجمة حسب الإعدادات
+            arabicMeaningEl.style.display = showMeaning ? 'block' : 'none';
 
             const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
             progressBar.style.width = `${progressPercent}%`;
@@ -924,6 +938,8 @@
             }
 
             soundEnabled = soundToggle.checked;
+            showMeaning = showMeaningToggle.checked; // تطبيق حالة مفتاح الترجمة
+            
             settingsModal.classList.remove('active');
             startQuiz();
         };
