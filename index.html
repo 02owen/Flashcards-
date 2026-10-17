@@ -949,5 +949,162 @@
 
         window.onload = () => startQuiz();
     </script>
+<!-- ===== Vocab mode: Gender / Vocab switcher + vocab quiz (runs after the original script) ===== -->
+<style>
+    .mode-switch { display: flex; gap: 5px; padding: 5px; margin-bottom: 20px; background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow); }
+    .mode-btn { flex: 1; border: none; background: transparent; color: var(--text-muted); font-size: 1rem; font-weight: 700; padding: 11px; border-radius: 10px; cursor: pointer; transition: var(--transition); }
+    .mode-btn:hover { color: var(--primary); }
+    .mode-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+    .vocab-grid { display: none; flex-direction: column; gap: 10px; direction: ltr; }
+    .vocab-btn { border: 2px solid #E5E7EB; background: #F9FAFB; color: var(--text-main); border-radius: 14px; padding: 14px 16px; font-size: 1rem; font-weight: 600; text-align: left; cursor: pointer; transition: var(--transition); }
+    .vocab-btn:hover { border-color: var(--primary); background: #EEF2FF; }
+    .vocab-btn.correct { background: #D1FAE5 !important; border-color: var(--success) !important; color: #065F46 !important; }
+    .vocab-btn.wrong { background: #FEE2E2 !important; border-color: var(--danger) !important; color: #991B1B !important; animation: shake 0.4s ease; }
+    .tag-vocab { background: #E0E7FF; color: var(--primary); direction: ltr; text-align: left; border-radius: 12px; max-width: 60%; }
+</style>
+<script>
+(function () {
+    /* Vocab database: French word -> French synonym / definition */
+    const vocabDatabase = [
+        { french: "Exhaustif", meaning: "Complet, total" },
+        { french: "Festif", meaning: "Qui a un caractère de fête" },
+        { french: "S'enflammer", meaning: "S'animer" },
+        { french: "Sillonner", meaning: "Parcourir, traverser" },
+        { french: "Forain(e)", meaning: "Nomade, mobile" },
+        { french: "Tombola", meaning: "Loterie" },
+        { french: "Répertoires", meaning: "Ensemble des œuvres qu'a l'habitude de faire entendre un musicien, un chanteur, etc." },
+        { french: "Commémorer", meaning: "Rappeler par une cérémonie, célébrer" },
+        { french: "Rythmer", meaning: "Marquer" },
+        { french: "Débuter", meaning: "Commencer" },
+        { french: "Se parer", meaning: "Se décorer" },
+        { french: "Char", meaning: "Véhicule décoré lors des fêtes ou carnavals" },
+        { french: "Fanfare", meaning: "Musique militaire, très sonore" },
+        { french: "Animations", meaning: "Ici, activités" },
+        { french: "Le cortège", meaning: "Le défilé" },
+        { french: "Arrondissement", meaning: "Quartier" },
+        { french: "Dégustation (déguster)", meaning: "Goûter, savourer" },
+        { french: "Gastronomie", meaning: "Nourriture, alimentation" },
+        { french: "Rendre hommage à", meaning: "Saluer publiquement, honorer" },
+        { french: "Soumettre", meaning: "Ranger sous l'autorité" },
+        { french: "Prise en charge", meaning: "Aide" },
+        { french: "En marge", meaning: "À côté/à l'écart" },
+        { french: "Bénéficiaire", meaning: "Qui tire un profit" },
+        { french: "Dépression", meaning: "Mélancolie, tristesse" },
+        { french: "Éliminer", meaning: "Écarter, mettre dehors" },
+        { french: "Tension", meaning: "Stress" },
+        { french: "Anxiété", meaning: "Inquiétude" },
+        { french: "Fardeau", meaning: "Soucis, peine, douleur" },
+        { french: "Financer", meaning: "Payer" }
+    ];
+
+    let mode = 'gender';
+    let vocabTimer = null;
+
+    /* Mode switcher + vocab answer area (built here so the original HTML stays untouched) */
+    const genderGrid = document.querySelector('.gender-grid');
+    const vocabGrid = document.createElement('div');
+    vocabGrid.className = 'vocab-grid';
+    genderGrid.after(vocabGrid);
+
+    const modeSwitch = document.createElement('div');
+    modeSwitch.className = 'mode-switch';
+    modeSwitch.innerHTML = '<button class="mode-btn active" data-mode="gender">تحديد الجنس</button><button class="mode-btn" data-mode="vocab">المفردات</button>';
+    document.querySelector('.header-actions').after(modeSwitch);
+
+    function syncUI() {
+        const v = mode === 'vocab';
+        modeSwitch.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+        genderGrid.style.display = v ? 'none' : '';
+        vocabGrid.style.display = v ? 'flex' : 'none';
+        document.querySelector('.app-title span').textContent = v ? 'المفردات' : 'تحديد الجنس';
+        showMeaningToggle.closest('.setting-item').style.display = v ? 'none' : '';
+        frenchWordEl.style.fontSize = '';
+    }
+
+    modeSwitch.onclick = e => {
+        const b = e.target.closest('.mode-btn');
+        if (!b || b.dataset.mode === mode) return;
+        const wait = isAnsweringBlocked && quizCard.style.display !== 'none' ? 1050 : 0;
+        setTimeout(() => { mode = b.dataset.mode; syncUI(); startQuiz(); }, wait);
+    };
+
+    /* Wrap the original engine: gender mode runs your original code as-is */
+    const genderStart = startQuiz, genderLoad = loadQuestion, genderResults = showFinalResults;
+
+    startQuiz = function (pool = null) {
+        clearTimeout(vocabTimer);
+        if (mode !== 'vocab') return genderStart(pool);
+        activePool = pool || vocabDatabase;
+        const count = pool ? pool.length : (isAllWordsMode ? activePool.length : Math.min(maxQuestions, activePool.length));
+        currentQuestions = [...activePool].sort(() => 0.5 - Math.random()).slice(0, count);
+        currentIndex = 0;
+        score = 0;
+        wrongWordsList = [];
+        isAnsweringBlocked = false;
+        resultCard.style.display = 'none';
+        quizCard.style.display = 'block';
+        updateScoreDisplay();
+        loadQuestion();
+    };
+
+    loadQuestion = function () {
+        if (mode !== 'vocab') return genderLoad();
+        isAnsweringBlocked = false;
+        const item = currentQuestions[currentIndex];
+        frenchWordEl.textContent = item.french;
+        frenchWordEl.style.fontSize = item.french.length > 14 ? '1.9rem' : '';
+        arabicMeaningEl.textContent = 'اختر المعنى الصحيح';
+        arabicMeaningEl.style.display = 'block';
+
+        const options = [item, ...vocabDatabase.filter(w => w !== item).sort(() => 0.5 - Math.random()).slice(0, 3)]
+            .sort(() => 0.5 - Math.random());
+        vocabGrid.innerHTML = '';
+        options.forEach(o => {
+            const btn = document.createElement('button');
+            btn.className = 'vocab-btn';
+            btn.textContent = o.meaning;
+            btn.onclick = () => answerVocab(o === item, btn, item);
+            vocabGrid.appendChild(btn);
+        });
+
+        progressBar.style.width = `${(currentIndex / currentQuestions.length) * 100}%`;
+        progressText.textContent = `السؤال ${currentIndex + 1} من ${currentQuestions.length}`;
+    };
+
+    function answerVocab(isCorrect, btn, item) {
+        if (isAnsweringBlocked) return;
+        isAnsweringBlocked = true;
+        if (isCorrect) {
+            btn.classList.add('correct');
+            playSound('correct');
+            score++;
+            updateScoreDisplay();
+        } else {
+            btn.classList.add('wrong');
+            playSound('wrong');
+            wrongWordsList.push(item);
+            [...vocabGrid.children].find(b => b.textContent === item.meaning).classList.add('correct');
+        }
+        vocabTimer = setTimeout(() => {
+            currentIndex++;
+            currentIndex < currentQuestions.length ? loadQuestion() : showFinalResults();
+        }, 1000);
+    }
+
+    showFinalResults = function () {
+        genderResults();
+        if (mode !== 'vocab') return;
+        errorsList.innerHTML = '';
+        wrongWordsList.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'error-item';
+            div.innerHTML = `<span class="error-word">${item.french}</span><span class="correct-tag tag-vocab">${item.meaning}</span>`;
+            errorsList.appendChild(div);
+        });
+    };
+
+    syncUI();
+})();
+</script>
 </body>
 </html>
